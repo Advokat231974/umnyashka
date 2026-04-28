@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>УмняшКа — репетитор Руслана</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Baloo+2:wght@700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --pink: #ff6b9d;
+    --purple: #ab47bc;
+    --blue: #5c6bc0;
+    --orange: #ffa726;
+    --cyan: #26c6da;
+    --green: #66bb6a;
+    --yellow: #ffd54f;
+    --red: #ef5350;
+    --text: #2d1b4e;
+    --muted: #8b7aa8;
+    --ai-color: #7c4dff;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Fredoka', sans-serif;
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: linear-gradient(135deg, #fce4ec 0%, #e1f5fe 50%, #f3e5f5 100%);
+    color: var(--text);
+  }
+
+  /* HEADER */
+  .header {
+    background: linear-gradient(135deg, #ff6b9d, #ab47bc, #5c6bc0);
+    padding: 12px 14px;
+    box-shadow: 0 4px 20px rgba(171,71,188,0.3);
+    flex-shrink: 0;
+  }
+  .header-top { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .owl {
+    width: 56px; height: 56px;
+    background: linear-gradient(135deg, #fff176, #ffb74d);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 30px;
+    box-shadow: 0 0 0 3px rgba(255,255,255,0.3);
+    animation: wiggle 4s ease-in-out infinite;
+    flex-shrink: 0;
+  }
+  @keyframes wiggle { 0%,100%{transform:rotate(0)} 25%{transform:rotate(-6deg)} 75%{transform:rotate(6deg)} }
+  .header-info { color: #fff; flex: 1; }
+  .header-name { font-family: 'Baloo 2', cursive; font-size: 26px; font-weight: 800; text-shadow: 2px 2px 0 rgba(0,0,0,0.15); line-height: 1; }
+  .header-sub { font-size: 13px; font-weight: 600; opacity: 0.95; display: flex; align-items: center; gap: 5px; margin-top: 3px; }
+  .dot { width: 8px; height: 8px; background: #4caf50; border-radius: 50%; box-shadow: 0 0 6px #4caf50; animation: pulse 1.5s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+  .header-btns { display: flex; gap: 6px; }
+  .hbtn {
+    width: 42px; height: 42px;
+    background: rgba(255,255,255,0.2);
+    border: 2px solid rgba(255,255,255,0.3);
+    border-radius: 50%; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; transition: all 0.2s; color: #fff;
+  }
+  .hbtn:hover { background: rgba(255,255,255,0.35); transform: scale(1.1); }
+  .hbtn.off { opacity: 0.45; }
+
+  .subjects { display: grid; grid-template-columns: repeat(4,1fr); gap: 5px; }
+  .subj {
+    background: rgba(255,255,255,0.2);
+    border: 2px solid rgba(255,255,255,0.3);
+    color: #fff; padding: 8px 3px;
+    border-radius: 12px; font-size: 12px; font-weight: 700;
+    cursor: pointer; transition: all 0.2s; text-align: center;
+    font-family: 'Fredoka', sans-serif;
+    display: flex; flex-direction: column; align-items: center; gap: 2px;
+  }
+  .subj .ic { font-size: 20px; }
+  .subj:hover { transform: scale(1.05); }
+  .subj.active { background: #fff; color: var(--text); box-shadow: 0 4px 12px rgba(0,0,0,0.2); transform: scale(1.05); }
+
+  /* XP */
+  .xp-wrap {
+    margin: 8px 12px 0; flex-shrink: 0;
+    background: linear-gradient(90deg, #fff9c4, #ffe082);
+    border: 2px solid var(--yellow); border-radius: 14px;
+    padding: 8px 12px; display: flex; align-items: center; gap: 8px;
+    box-shadow: 0 3px 10px rgba(255,213,79,0.3);
+  }
+  .xp-icon { font-size: 20px; animation: spin 4s linear infinite; }
+  @keyframes spin { from{transform:rotate(0)} to{transform:rotate(360deg)} }
+  .xp-track { flex: 1; height: 11px; background: rgba(255,255,255,0.6); border-radius: 10px; overflow: hidden; }
+  .xp-fill { height: 100%; background: linear-gradient(90deg, var(--pink), var(--orange), var(--green)); border-radius: 10px; width: 0%; transition: width 0.6s cubic-bezier(.34,1.56,.64,1); }
+  .xp-stars { font-size: 16px; }
+  .xp-count { font-size: 14px; font-weight: 800; color: #e65100; white-space: nowrap; }
+
+  /* CHAT */
+  .chat { flex: 1; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 10px; scroll-behavior: smooth; }
+  .chat::-webkit-scrollbar { width: 4px; }
+  .chat::-webkit-scrollbar-thumb { background: rgba(171,71,188,0.3); border-radius: 4px; }
+
+  .msg-row { display: flex; gap: 8px; align-items: flex-end; animation: popIn 0.35s cubic-bezier(.34,1.56,.64,1); }
+  .msg-row.user { flex-direction: row-reverse; }
+  @keyframes popIn { from{opacity:0;transform:translateY(16px) scale(0.85)} to{opacity:1;transform:none} }
+
+  .msg-av { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; box-shadow: 0 2px 8px rgba(0,0,0,0.12); }
+  .msg-av.bot { background: linear-gradient(135deg, #fff176, #ffb74d); }
+  .msg-av.user { background: linear-gradient(135deg, #81d4fa, #4fc3f7); }
+
+  .bubble { max-width: 80%; padding: 12px 16px; border-radius: 20px; font-size: 19px; line-height: 1.55; font-weight: 500; box-shadow: 0 3px 10px rgba(171,71,188,0.1); }
+  .bubble.bot { background: #fff; color: var(--text); border-bottom-left-radius: 4px; border: 2px solid rgba(255,154,158,0.3); }
+  .bubble.user { background: linear-gradient(135deg, #4fc3f7, #29b6f6); color: #fff; border-bottom-right-radius: 4px; font-weight: 600; }
+  .bubble.ai-bubble { border-color: rgba(124,77,255,0.3); }
+
+  .subj-tag { font-size: 11px; font-weight: 800; padding: 2px 9px; border-radius: 8px; display: inline-block; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .ai-tag { font-size: 11px; font-weight: 800; padding: 2px 9px; border-radius: 8px; display: inline-block; margin-bottom: 6px; background: rgba(124,77,255,0.15); color: var(--ai-color); text-transform: uppercase; letter-spacing: 0.5px; }
+
+  .speak-btn { background: linear-gradient(135deg, #ce93d8, #ab47bc); border: none; cursor: pointer; width: 30px; height: 30px; border-radius: 50%; color: #fff; font-size: 14px; margin-left: 7px; vertical-align: middle; transition: all 0.2s; box-shadow: 0 2px 6px rgba(171,71,188,0.4); }
+  .speak-btn:hover { transform: scale(1.15); }
+
+  /* Image preview in chat */
+  .chat-img { max-width: 220px; border-radius: 14px; margin-top: 6px; display: block; box-shadow: 0 3px 10px rgba(0,0,0,0.15); }
+
+  .quick-replies { display: flex; flex-wrap: wrap; gap: 8px; margin-left: 48px; animation: popIn 0.3s ease 0.1s both; }
+  .qr { background: linear-gradient(135deg, #fff, #f3e5f5); border: 2px solid #ce93d8; color: #6a1b9a; padding: 8px 15px; border-radius: 20px; font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.2s; font-family: 'Fredoka', sans-serif; box-shadow: 0 3px 8px rgba(206,147,216,0.3); }
+  .qr:hover { transform: translateY(-2px) scale(1.05); }
+
+  .typing-dots { display: flex; gap: 5px; align-items: center; padding: 11px 15px; }
+  .typing-dots span { width: 9px; height: 9px; background: linear-gradient(135deg, var(--pink), var(--purple)); border-radius: 50%; animation: bounce 1.2s infinite; }
+  .typing-dots span:nth-child(2){animation-delay:0.2s}
+  .typing-dots span:nth-child(3){animation-delay:0.4s}
+  @keyframes bounce { 0%,60%,100%{transform:translateY(0);opacity:0.5} 30%{transform:translateY(-8px);opacity:1} }
+
+  /* AI thinking */
+  .ai-thinking { display: flex; gap: 5px; align-items: center; padding: 11px 15px; }
+  .ai-thinking span { width: 9px; height: 9px; background: linear-gradient(135deg, var(--ai-color), #b388ff); border-radius: 50%; animation: bounce 1.2s infinite; }
+  .ai-thinking span:nth-child(2){animation-delay:0.2s}
+  .ai-thinking span:nth-child(3){animation-delay:0.4s}
+
+  #reward { position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%) scale(0); background: linear-gradient(135deg, #ffd54f, #ffa726); color: #fff; padding: 18px 28px; border-radius: 20px; font-family: 'Baloo 2', cursive; font-size: 24px; font-weight: 800; box-shadow: 0 10px 40px rgba(255,167,38,0.5); z-index: 100; pointer-events: none; text-shadow: 2px 2px 0 rgba(0,0,0,0.2); }
+  #reward.show { animation: rewardPop 1.5s ease forwards; }
+  @keyframes rewardPop { 0%{transform:translate(-50%,-50%) scale(0) rotate(-15deg)} 20%{transform:translate(-50%,-50%) scale(1.2) rotate(5deg)} 40%{transform:translate(-50%,-50%) scale(1) rotate(0)} 80%{transform:translate(-50%,-50%) scale(1);opacity:1} 100%{transform:translate(-50%,-160%) scale(0.8);opacity:0} }
+
+  .welcome { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; text-align: center; padding: 24px; gap: 10px; }
+  .welcome .big-owl { font-size: 72px; animation: bounce 2s infinite; }
+  .welcome h2 { font-family: 'Baloo 2', cursive; font-size: 26px; font-weight: 800; color: var(--purple); }
+  .welcome p { color: var(--muted); font-size: 18px; font-weight: 600; }
+
+  /* INPUT AREA */
+  .input-area { padding: 10px 12px 14px; background: rgba(255,255,255,0.88); backdrop-filter: blur(20px); border-top: 2px solid rgba(171,71,188,0.15); display: flex; flex-direction: column; gap: 8px; flex-shrink: 0; }
+
+  .input-row { display: flex; gap: 8px; align-items: flex-end; }
+
+  /* Photo preview */
+  .photo-preview { display: none; position: relative; }
+  .photo-preview img { width: 70px; height: 70px; object-fit: cover; border-radius: 12px; border: 2px solid var(--purple); }
+  .photo-preview .del-photo { position: absolute; top: -6px; right: -6px; width: 22px; height: 22px; background: var(--red); border: none; border-radius: 50%; color: #fff; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: 800; }
+
+  textarea {
+    flex: 1; background: #fff; border: 2px solid #e1bee7; border-radius: 22px;
+    padding: 11px 16px; font-family: 'Fredoka', sans-serif;
+    font-size: 17px; font-weight: 500; color: var(--text);
+    resize: none; outline: none; max-height: 110px; line-height: 1.4;
+    transition: all 0.2s;
+  }
+  textarea::placeholder { color: var(--muted); }
+  textarea:focus { border-color: var(--purple); box-shadow: 0 0 0 4px rgba(171,71,188,0.15); }
+
+  .btn-row { display: flex; gap: 6px; align-items: center; justify-content: flex-end; }
+
+  .action-btn { height: 46px; border: none; border-radius: 23px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; font-family: 'Fredoka', sans-serif; font-size: 15px; font-weight: 700; transition: all 0.2s; padding: 0 16px; flex-shrink: 0; }
+  .send-btn { background: linear-gradient(135deg, var(--pink), var(--purple)); color: #fff; box-shadow: 0 4px 12px rgba(171,71,188,0.4); width: 46px; padding: 0; border-radius: 50%; font-size: 20px; }
+  .send-btn:hover { transform: scale(1.1) rotate(15deg); }
+  .send-btn:active { transform: scale(0.92); }
+  .send-btn:disabled { opacity: 0.5; cursor: default; transform: none; }
+  .ai-btn { background: linear-gradient(135deg, #7c4dff, #b388ff); color: #fff; box-shadow: 0 4px 12px rgba(124,77,255,0.4); }
+  .ai-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(124,77,255,0.5); }
+  .ai-btn:disabled { opacity: 0.5; cursor: default; transform: none; }
+  .mic-btn { background: linear-gradient(135deg, #66bb6a, #43a047); color: #fff; box-shadow: 0 4px 12px rgba(102,187,106,0.4); width: 46px; padding: 0; border-radius: 50%; font-size: 20px; }
+  .mic-btn:hover { transform: scale(1.1); }
+  .mic-btn.listening { background: linear-gradient(135deg, var(--red), #c62828); animation: micPulse 1s ease-in-out infinite; }
+  .photo-btn { background: linear-gradient(135deg, #ffa726, #ff7043); color: #fff; box-shadow: 0 4px 12px rgba(255,112,67,0.4); width: 46px; padding: 0; border-radius: 50%; font-size: 20px; }
+  .photo-btn:hover { transform: scale(1.1); }
+  @keyframes micPulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.15)} }
+
+  #fileInput { display: none; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <div class="owl">🦉</div>
+    <div class="header-info">
+      <div class="header-name">УмняшКа</div>
+      <div class="header-sub"><span class="dot"></span> онлайн · репетитор Руслана · 5 класс</div>
+    </div>
+    <div class="header-btns">
+      <button class="hbtn" id="voiceBtn" onclick="toggleVoice()" title="Голос">🔊</button>
+    </div>
+  </div>
+  <div class="subjects">
+    <div class="subj" data-s="math" onclick="pick('math')"><span class="ic">🔢</span>Математика</div>
+    <div class="subj" data-s="rus"  onclick="pick('rus')"><span class="ic">📝</span>Русский</div>
+    <div class="subj" data-s="lit"  onclick="pick('lit')"><span class="ic">📖</span>Литература</div>
+    <div class="subj" data-s="eng"  onclick="pick('eng')"><span class="ic">🇬🇧</span>English</div>
+    <div class="subj" data-s="hist" onclick="pick('hist')"><span class="ic">🏛️</span>История</div>
+    <div class="subj" data-s="geo"  onclick="pick('geo')"><span class="ic">🌍</span>География</div>
+    <div class="subj" data-s="bio"  onclick="pick('bio')"><span class="ic">🌱</span>Биология</div>
+    <div class="subj" data-s="free" onclick="pick('free')"><span class="ic">💬</span>Свободно</div>
+  </div>
+</div>
+
+<div class="xp-wrap" id="xpWrap" style="display:none">
+  <div class="xp-icon">⚡</div>
+  <div class="xp-track"><div class="xp-fill" id="xpFill"></div></div>
+  <div class="xp-stars" id="xpStars">☆☆☆☆☆</div>
+  <div class="xp-count" id="xpCount">0 XP</div>
+</div>
+
+<div class="chat" id="chat">
+  <div class="welcome" id="welcome">
+    <div class="big-owl">🦉</div>
+    <h2>Привет, Руслан!</h2>
+    <p>Я УмняшКа — твой умный репетитор!<br>Выбери предмет вверху и начнём 🚀</p>
+  </div>
+</div>
+
+<div id="reward"></div>
+
+<input type="file" id="fileInput" accept="image/*" onchange="handlePhoto(event)">
+
+<div class="input-area">
+  <div class="photo-preview" id="photoPreview">
+    <img id="photoThumb" src="" alt="">
+    <button class="del-photo" onclick="removePhoto()">✕</button>
+  </div>
+  <div class="input-row">
+    <textarea id="inp" placeholder="Напиши вопрос или ответ..." rows="1"
+      onkeydown="onKey(event)" oninput="resize(this)"></textarea>
+  </div>
+  <div class="btn-row">
+    <button class="action-btn photo-btn" onclick="document.getElementById('fileInput').click()" title="Фото задачи">📸</button>
+    <button class="action-btn mic-btn" id="micBtn" onclick="toggleMic()" title="Говори голосом">🎤</button>
+    <button class="action-btn ai-btn" id="aiBtn" onclick="sendAI()" disabled>⭐ Спросить ИИ</button>
+    <button class="action-btn send-btn" id="sendBtn" onclick="send()" disabled>➤</button>
+  </div>
+</div>
+
+<script>
+const API_KEY = 'sk-or-vv-3fde9d499472f0a0ae57a3bf44ad4131dc2bb734bc4b31eae3d39eed8623be82';
+const API_URL = 'https://api.vsegpt.ru/v1/chat/completions';
+const AI_MODEL = 'anthropic/claude-sonnet-4-5';
+
+const SUBJECTS = {
+  math: { name: '🔢 Математика', color: '#ff6b9d', lang: 'ru',
+    greet: 'Ура, математика! 🔢 Что будем разбирать? Дроби, уравнения, геометрию? Или есть задача из учебника — фотографируй и присылай! 📸',
+    hints: ['Дроби', 'Уравнения', 'Геометрия', 'Сфотографировать задачу'],
+    system: 'Ты УмняшКа — дружелюбный репетитор-сова для ученика 5 класса по имени Руслан. Предмет: Математика. Объясняй просто, с примерами из жизни, хвали за правильные ответы, при ошибке направляй мягко. Отвечай коротко (3-5 предложений). Без markdown разметки.' },
+  rus: { name: '📝 Русский язык', color: '#ffa726', lang: 'ru',
+    greet: 'Русский язык — это красота! ✏️ Что изучаем? Части речи, орфография, или сочинение пишем?',
+    hints: ['Части речи', 'Орфография', 'Пунктуация', 'Помоги с сочинением'],
+    system: 'Ты УмняшКа — дружелюбный репетитор-сова для ученика 5 класса по имени Руслан. Предмет: Русский язык. Объясняй правила просто, с примерами, хвали за правильные ответы. Отвечай коротко (3-5 предложений). Без markdown.' },
+  lit: { name: '📖 Литература', color: '#e91e63', lang: 'ru',
+    greet: 'Литература — это целый мир! 📖 Что читаем? Могу помочь с пересказом, анализом героев или сочинением!',
+    hints: ['Пересказ произведения', 'Анализ героя', 'Помоги с сочинением', 'Что означает этот отрывок'],
+    system: 'Ты УмняшКа — дружелюбный репетитор-сова для ученика 5 класса по имени Руслан. Предмет: Литература. Помогай с пересказами, анализом произведений, сочинениями. Объясняй интересно. Отвечай коротко (3-5 предложений). Без markdown.' },
+  eng: { name: '🇬🇧 English', color: '#5c6bc0', lang: 'en',
+    greet: 'Wow, English time! 🇬🇧 Что учим? Слова, грамматику, или попрактикуем диалог?',
+    hints: ['Семья (Family)', 'Глагол to be', 'Present Simple', 'Переведи фразу'],
+    system: 'You are UmnyashKa — a friendly owl tutor for a 5th grade student named Ruslan. Subject: English. Explain in both Russian and English. Praise correct answers warmly. Keep answers short (3-5 sentences). No markdown.' },
+  hist: { name: '🏛️ История', color: '#ab47bc', lang: 'ru',
+    greet: 'История — это путешествие во времени! 🏛️ Какой период изучаем? Древний мир, Средневековье?',
+    hints: ['Древний Египет', 'Древняя Греция', 'Древний Рим', 'Средневековье'],
+    system: 'Ты УмняшКа — дружелюбный репетитор-сова для ученика 5 класса по имени Руслан. Предмет: История. Рассказывай интересно, с яркими деталями. Хвали за правильные ответы. Отвечай коротко (3-5 предложений). Без markdown.' },
+  geo: { name: '🌍 География', color: '#26c6da', lang: 'ru',
+    greet: 'Поехали в путешествие! 🌍 Материки, климат, строение Земли — что изучаем?',
+    hints: ['Строение Земли', 'Материки', 'Природные зоны', 'Океаны'],
+    system: 'Ты УмняшКа — дружелюбный репетитор-сова для ученика 5 класса по имени Руслан. Предмет: География. Объясняй с примерами, хвали за правильные ответы. Отвечай коротко (3-5 предложений). Без markdown.' },
+  bio: { name: '🌱 Биология', color: '#66bb6a', lang: 'ru',
+    greet: 'Биология — наука о жизни! 🌱 Что изучаем? Растения, животные, тело человека?',
+    hints: ['Растения', 'Животные', 'Тело человека', 'Грибы'],
+    system: 'Ты УмняшКа — дружелюбный репетитор-сова для ученика 5 класса по имени Руслан. Предмет: Биология. Объясняй с примерами из жизни, хвали за правильные ответы. Отвечай коротко (3-5 предложений). Без markdown.' },
+  free: { name: '💬 Свободно', color: '#7c4dff', lang: 'ru',
+    greet: 'Свободный режим! 💬 Спрашивай всё что хочешь — я помогу с любым вопросом! Или пришли фото задачи 📸',
+    hints: ['Помоги с домашним заданием', 'Объясни тему', 'Проверь мой ответ', 'Не понимаю задачу'],
+    system: 'Ты УмняшКа — дружелюбный репетитор-сова для ученика 5 класса по имени Руслан. Помогай с любыми учебными вопросами. Отвечай просто и понятно, хвали за старание. Без markdown.' }
+};
+
+let subject = null;
+let xp = 0;
+let typingLock = false;
+let voiceOn = true;
+let femaleVoiceRu = null;
+let femaleVoiceEn = null;
+let recognition = null;
+let isListening = false;
+let photoBase64 = null;
+let photoMime = null;
+let chatHistory = [];
+
+// ===== VOICE =====
+function loadVoices() {
+  if (!window.speechSynthesis) return;
+  const voices = window.speechSynthesis.getVoices();
+  if (!voices.length) return;
+  const femaleNames = ['Milena','Katya','Samantha','Karen','Victoria','Allison','Susan','Tessa','Moira','Fiona','Serena'];
+  for (const n of femaleNames) {
+    const v = voices.find(v => v.name.includes(n) && v.lang.startsWith('ru'));
+    if (v) { femaleVoiceRu = v; break; }
+  }
+  if (!femaleVoiceRu) femaleVoiceRu = voices.find(v => v.lang.startsWith('ru')) || null;
+  for (const n of femaleNames) {
+    const v = voices.find(v => v.name.includes(n) && v.lang.startsWith('en'));
+    if (v) { femaleVoiceEn = v; break; }
+  }
+  if (!femaleVoiceEn) femaleVoiceEn = voices.find(v => v.lang.startsWith('en') && /samantha|karen|victoria|allison|susan|tessa|moira|fiona|serena/i.test(v.name)) || voices.find(v => v.lang.startsWith('en')) || null;
+}
+if (window.speechSynthesis) { loadVoices(); window.speechSynthesis.onvoiceschanged = loadVoices; }
+
+function speak(text, lang) {
+  if (!voiceOn || !window.speechSynthesis) return;
+  let clean = text.replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{27BF}•]/gu, '');
+  if (lang === 'en') {
+    const m = clean.match(/[A-Za-z][A-Za-z\s']+/g);
+    if (!m) return;
+    clean = m.join('. ');
+  } else {
+    clean = clean.replace(/[A-Za-z]+/g, '').replace(/\s+/g, ' ').trim();
+  }
+  if (!clean.trim()) return;
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(clean);
+  u.rate = lang === 'en' ? 0.85 : 1.0;
+  u.pitch = 1.15;
+  u.volume = 1.0;
+  if (lang === 'en') { u.lang = 'en-US'; if (femaleVoiceEn) u.voice = femaleVoiceEn; }
+  else { u.lang = 'ru-RU'; if (femaleVoiceRu) u.voice = femaleVoiceRu; }
+  window.speechSynthesis.speak(u);
+}
+
+function toggleVoice() {
+  voiceOn = !voiceOn;
+  const btn = document.getElementById('voiceBtn');
+  btn.textContent = voiceOn ? '🔊' : '🔇';
+  btn.classList.toggle('off', !voiceOn);
+  if (!voiceOn && window.speechSynthesis) window.speechSynthesis.cancel();
+}
+
+// ===== PHOTO =====
+function handlePhoto(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  photoMime = file.type;
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    photoBase64 = ev.target.result.split(',')[1];
+    document.getElementById('photoThumb').src = ev.target.result;
+    document.getElementById('photoPreview').style.display = 'block';
+    document.getElementById('inp').placeholder = 'Добавь вопрос к фото или нажми ⭐ ИИ...';
+  };
+  reader.readAsDataURL(file);
+  e.target.value = '';
+}
+
+function removePhoto() {
+  photoBase64 = null;
+  photoMime = null;
+  document.getElementById('photoPreview').style.display = 'none';
+  document.getElementById('photoThumb').src = '';
+  document.getElementById('inp').placeholder = subject === 'eng' ? 'Напиши или скажи по-английски... 🎤' : 'Напиши вопрос или ответ...';
+}
+
+// ===== UI HELPERS =====
+function pick(s) {
+  subject = s;
+  typingLock = false;
+  xp = 0;
+  chatHistory = [];
+  photoBase64 = null;
+  photoMime = null;
+  document.getElementById('photoPreview').style.display = 'none';
+  document.getElementById('xpFill').style.width = '0%';
+  document.getElementById('xpCount').textContent = '0 XP';
+  document.getElementById('xpStars').textContent = '☆☆☆☆☆';
+  document.querySelectorAll('.subj').forEach(el => el.classList.remove('active'));
+  document.querySelector(`.subj[data-s="${s}"]`).classList.add('active');
+  document.getElementById('xpWrap').style.display = 'flex';
+  document.getElementById('sendBtn').disabled = false;
+  document.getElementById('aiBtn').disabled = false;
+  document.getElementById('inp').placeholder = s === 'eng' ? 'Напиши или скажи по-английски... 🎤' : 'Напиши вопрос или ответ...';
+  if (window.speechSynthesis) window.speechSynthesis.cancel();
+  stopMic();
+  document.getElementById('chat').innerHTML = '';
+  addMsg(SUBJECTS[s].greet, 'bot', false);
+  setTimeout(() => addHints(SUBJECTS[s].hints), 400);
+}
+
+function addHints(hints) {
+  const chat = document.getElementById('chat');
+  const wrap = document.createElement('div');
+  wrap.className = 'quick-replies';
+  hints.forEach(h => {
+    const btn = document.createElement('button');
+    btn.className = 'qr';
+    btn.textContent = h;
+    btn.onclick = () => { wrap.remove(); submitText(h); };
+    wrap.appendChild(btn);
+  });
+  chat.appendChild(wrap);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function addMsg(text, type, isAI, imgSrc) {
+  const chat = document.getElementById('chat');
+  const row = document.createElement('div');
+  row.className = `msg-row ${type}`;
+
+  const av = document.createElement('div');
+  av.className = `msg-av ${type}`;
+  av.textContent = type === 'bot' ? '🦉' : '😊';
+
+  const bubble = document.createElement('div');
+  bubble.className = `bubble ${type}${isAI ? ' ai-bubble' : ''}`;
+
+  if (type === 'bot' && subject) {
+    const tag = document.createElement('span');
+    tag.className = isAI ? 'ai-tag' : 'subj-tag';
+    tag.style.background = isAI ? '' : (SUBJECTS[subject].color + '22');
+    tag.style.color = isAI ? '' : SUBJECTS[subject].color;
+    tag.textContent = isAI ? '⭐ ИИ · ' + SUBJECTS[subject].name : SUBJECTS[subject].name;
+    bubble.appendChild(tag);
+    bubble.appendChild(document.createElement('br'));
+  }
+
+  if (imgSrc) {
+    const img = document.createElement('img');
+    img.src = imgSrc;
+    img.className = 'chat-img';
+    bubble.appendChild(img);
+    bubble.appendChild(document.createElement('br'));
+  }
+
+  text.split('\n').forEach((line, i) => {
+    if (i > 0) bubble.appendChild(document.createElement('br'));
+    bubble.appendChild(document.createTextNode(line));
+  });
+
+  if (type === 'bot') {
+    const sb = document.createElement('button');
+    sb.className = 'speak-btn';
+    sb.textContent = '🔊';
+    sb.title = 'Послушать';
+    sb.onclick = (e) => { e.stopPropagation(); speak(text, SUBJECTS[subject]?.lang || 'ru'); };
+    bubble.appendChild(sb);
+    if (voiceOn) setTimeout(() => speak(text, SUBJECTS[subject]?.lang || 'ru'), 300);
+  }
+
+  row.appendChild(av);
+  row.appendChild(bubble);
+  chat.appendChild(row);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function showTyping(ai) {
+  const chat = document.getElementById('chat');
+  const row = document.createElement('div');
+  row.className = 'msg-row bot';
+  row.id = 'typing';
+  const av = document.createElement('div');
+  av.className = 'msg-av bot';
+  av.textContent = '🦉';
+  const bubble = document.createElement('div');
+  bubble.className = `bubble bot${ai ? ' ai-bubble' : ''}`;
+  bubble.innerHTML = `<div class="${ai ? 'ai-thinking' : 'typing-dots'}"><span></span><span></span><span></span></div>`;
+  row.appendChild(av);
+  row.appendChild(bubble);
+  chat.appendChild(row);
+  chat.scrollTop = chat.scrollHeight;
+}
+function hideTyping() { const el = document.getElementById('typing'); if (el) el.remove(); }
+
+function addXP(amount, praise) {
+  xp = Math.min(xp + amount, 500);
+  document.getElementById('xpFill').style.width = (xp / 5) + '%';
+  document.getElementById('xpCount').textContent = xp + ' XP';
+  document.getElementById('xpStars').textContent = '★'.repeat(Math.floor(xp/100)) + '☆'.repeat(5-Math.floor(xp/100));
+  if (praise) {
+    const r = document.getElementById('reward');
+    r.textContent = '+' + amount + ' XP! 🌟';
+    r.classList.remove('show');
+    void r.offsetWidth;
+    r.classList.add('show');
+  }
+}
+
+// ===== AI CALL =====
+async function callAI(userText, imgBase64, imgMime) {
+  const s = SUBJECTS[subject];
+  const userContent = [];
+
+  if (imgBase64) {
+    userContent.push({ type: 'image_url', image_url: { url: `data:${imgMime};base64,${imgBase64}` } });
+  }
+  userContent.push({ type: 'text', text: userText || 'Помоги разобраться с этим заданием на фото' });
+
+  chatHistory.push({ role: 'user', content: userContent });
+
+  const messages = [
+    { role: 'system', content: s.system },
+    ...chatHistory.slice(-10)
+  ];
+
+  const resp = await fetch(API_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${API_KEY}` },
+    body: JSON.stringify({ model: AI_MODEL, messages, max_tokens: 800, temperature: 0.7 })
+  });
+
+  if (!resp.ok) {
+    const err = await resp.text();
+    throw new Error(err);
+  }
+
+  const data = await resp.json();
+  const reply = data.choices?.[0]?.message?.content || 'Упс, попробуй ещё раз!';
+  chatHistory.push({ role: 'assistant', content: reply });
+  return reply;
+}
+
+// ===== SEND FUNCTIONS =====
+function submitText(text) {
+  if (!text.trim() || typingLock) return;
+  if (!subject) { addMsg('Сначала выбери предмет вверху! 👆', 'bot', false); return; }
+  typingLock = true;
+  showTyping(false);
+
+  const t = text.toLowerCase();
+  let reply = null;
+
+  // Universal replies
+  if (t.match(/привет|hello|hi|хай/)) reply = 'Привет, Руслан! 👋 Как дела? Готов учиться? 🚀';
+  else if (t.match(/спасибо|thanks/)) reply = 'Всегда пожалуйста! 😊 Ты отлично справляешься!';
+  else if (t.match(/пока|bye|до свидан/)) reply = 'До встречи, Руслан! 👋 Молодец за занятие! 🌟';
+  else if (t.match(/устал|скучно|надоело/)) reply = 'Я понимаю! 😅 Сделай перерыв 5 минут и вернёмся! 💪';
+
+  // Subject-specific local replies
+  if (!reply && subject) {
+    const db = SUBJECTS[subject];
+    // Math
+    if (subject === 'math') {
+      if (t.match(/дроб/)) reply = 'Дроби — это когда целое делится на части! 🍕 Например пицца разрезана на 4 части — каждая часть это одна четвёртая. Что именно разбираем — сложение, вычитание или умножение дробей?';
+      else if (t.match(/уравн/)) reply = 'Уравнение — это загадка! 🔍 Например: икс плюс 5 равно 10. Значит икс равен 5. Напиши своё уравнение — решим вместе!';
+      else if (t.match(/перимет/)) reply = 'Периметр — это сумма всех сторон фигуры! 📐 У прямоугольника 5 и 3 сантиметра: 5+3+5+3 = 16 сантиметров. Попробуй сам!';
+      else if (t.match(/площад/)) reply = 'Площадь — это длина умножить на ширину! 📏 Например 4 на 3 = 12 квадратных сантиметров. Попробуй: 5 на 6 = ?';
+      else if (t.match(/30|двадцать|тридцать/)) reply = 'Правильно! 🌟 Отлично считаешь! Молодец!';
+      else if (t.match(/16|шестнадцать/)) reply = 'Верно! 🎉 16 — правильный ответ! Ты молодец!';
+    }
+    // Russian
+    else if (subject === 'rus') {
+      if (t.match(/части реч|часть реч/)) reply = 'Части речи — это группы слов! 📚\n• Существительное — кто? что? (кот, стол)\n• Прилагательное — какой? (красивый)\n• Глагол — что делать? (бежать)\nКакую разбираем подробнее?';
+      else if (t.match(/глагол/)) reply = 'Глагол — это действие! 🏃 Отвечает на вопрос что делать или что делает. Например: бежит, поёт, думает. Найди глагол в предложении: Руслан решил задачу!';
+      else if (t.match(/решил/)) reply = 'Правильно! 🎉 Решил — это глагол! Ты отлично знаешь русский язык!';
+      else if (t.match(/существит/)) reply = 'Существительное отвечает на вопрос кто или что! 🏠 Например: кот, дом, радость. Найди существительные: Быстрая лиса бежит по лесу!';
+      else if (t.match(/лиса|лес/)) reply = 'Отлично! 🌟 Лиса и лес — это существительные! Умница!';
+    }
+    // English
+    else if (subject === 'eng') {
+      if (t.match(/family|семь/)) reply = 'Family — семья! 👨‍👩‍👦\n• mother — мама\n• father — папа\n• sister — сестра\n• brother — брат\nКак по-английски брат?';
+      else if (t.match(/brother/)) reply = 'Perfect! 🌟 Brother — брат! А как сестра?';
+      else if (t.match(/sister/)) reply = 'Excellent! 🎉 Sister — сестра! Отлично знаешь семью!';
+      else if (t.match(/to be|am is are/)) reply = 'To be — это быть! 🔑\n• I am — я\n• You are — ты\n• He is, She is — он, она\nПопробуй: Я ученик — I ... a student?';
+      else if (t.match(/i am/)) reply = 'Brilliant! 🌟 I am a student — правильно!';
+    }
+    // History
+    else if (subject === 'hist') {
+      if (t.match(/египет/)) reply = 'Древний Египет — великая цивилизация! 🏺\n• Фараон — царь Египта\n• Пирамиды — гробницы фараонов\n• Нил — главная река\nКак называли царей Египта?';
+      else if (t.match(/фараон/)) reply = 'Правильно! 🌟 Фараон! Самая известная пирамида — пирамида Хеопса!';
+      else if (t.match(/греци/)) reply = 'Древняя Греция — родина демократии! ⚡\n• Афины — главный город\n• Зевс — главный бог\n• Олимпийские игры\nКак назывался главный город?';
+      else if (t.match(/афины/)) reply = 'Отлично! 🎉 Афины! Именно там появилась демократия!';
+      else if (t.match(/рим/)) reply = 'Древний Рим — великая империя! 🦅\n• Основан Ромулом\n• Колизей — амфитеатр\n• Латинский язык\nКак называлось сооружение для гладиаторов?';
+      else if (t.match(/колизей/)) reply = 'Превосходно! 🌟 Колизей вмещал 50 тысяч зрителей!';
+    }
+    // Geography
+    else if (subject === 'geo') {
+      if (t.match(/строен|слои/)) reply = 'Земля состоит из слоёв! 🌍\n• Земная кора — тонкий верхний слой\n• Мантия — горячий слой\n• Ядро — самое горячее место\nКакой слой самый тонкий?';
+      else if (t.match(/кора/)) reply = 'Правильно! 🌟 Земная кора — самый тонкий слой!';
+      else if (t.match(/материк|континент/)) reply = 'На Земле 6 материков! 🗺️\n• Евразия — самый большой\n• Африка — самый жаркий\n• Австралия — самый маленький\n• Антарктида — самый холодный\nСколько всего материков?';
+      else if (t.match(/^6$|шесть/)) reply = 'Правильно! 🎉 6 материков! На каком живём мы?';
+      else if (t.match(/евразия/)) reply = 'Отлично! 🌟 Евразия — наш материк и самый большой!';
+    }
+    // Biology
+    else if (subject === 'bio') {
+      if (t.match(/растен/)) reply = 'Растения — живые организмы! 🌿\n• Корень — пьёт воду\n• Стебель — переносит воду\n• Лист — фотосинтез\n• Цветок — размножение\nКак называется питание растений солнцем?';
+      else if (t.match(/фотосинтез/)) reply = 'Отлично! 🌟 Фотосинтез — растения поглощают углекислый газ и выделяют кислород!';
+      else if (t.match(/животн/)) reply = 'Животные делятся на группы! 🦁\n• Млекопитающие — кормят молоком\n• Птицы — есть крылья\n• Рыбы — живут в воде\n• Насекомые — 6 ног\nСколько ног у насекомых?';
+      else if (t.match(/^6$|шесть/)) reply = 'Правильно! 🐛 6 ног у всех насекомых!';
+      else if (t.match(/мозг/)) reply = 'Правильно! 🧠 Мозг управляет всем телом! Весит около 1,4 килограмма!';
+    }
+  }
+
+  // Default local reply if nothing matched
+  if (!reply) {
+    const defaults = [
+      'Интересный вопрос! 🤔 Для подробного объяснения нажми кнопку ⭐ Спросить ИИ!',
+      'Хороший вопрос! 💡 Нажми ⭐ ИИ — там я отвечу подробнее!',
+      'Напиши вопрос подробнее или нажми ⭐ ИИ для развёрнутого ответа! 😊',
+    ];
+    reply = defaults[Math.floor(Math.random() * defaults.length)];
+  }
+
+  setTimeout(() => {
+    hideTyping();
+    addMsg(reply, 'bot', false);
+    if (/правильно|отлично|верно|молодец|brilliant|perfect|excellent/i.test(reply)) {
+      addXP(20, true);
+    } else {
+      addXP(5, false);
+    }
+    typingLock = false;
+  }, 700);
+}
+
+async function sendAIWithText(text, imgB64, imgMime) {
+  if (typingLock) return;
+  typingLock = true;
+  showTyping(true);
+  try {
+    const reply = await callAI(text, imgB64, imgMime);
+    hideTyping();
+    addMsg(reply, 'bot', true);
+    addXP(25, true);
+  } catch(e) {
+    hideTyping();
+    addMsg('Не смогла связаться с ИИ 😔 Проверь интернет и попробуй ещё раз!', 'bot', false);
+  }
+  typingLock = false;
+}
+
+function send() {
+  const inp = document.getElementById('inp');
+  const text = inp.value.trim();
+  if (!text && !photoBase64) return;
+  if (!subject) { addMsg('Сначала выбери предмет вверху! 👆', 'bot', false); return; }
+  inp.value = '';
+  inp.style.height = 'auto';
+  addMsg(text, 'user');
+  const photo = photoBase64;
+  const mime = photoMime;
+  removePhoto();
+  addXP(5, false);
+  if (photo) {
+    sendAIWithText(text, photo, mime);
+  } else {
+    submitText(text);
+  }
+}
+
+async function sendAI() {
+  const inp = document.getElementById('inp');
+  const text = inp.value.trim();
+  if (!text && !photoBase64) {
+    addMsg('Напиши вопрос или прикрепи фото! 📸', 'bot', false);
+    return;
+  }
+  if (!subject) { addMsg('Сначала выбери предмет вверху! 👆', 'bot', false); return; }
+
+  const imgB64 = photoBase64;
+  const imgM = photoMime;
+  const imgSrc = imgB64 ? `data:${imgM};base64,${imgB64}` : null;
+
+  inp.value = '';
+  inp.style.height = 'auto';
+
+  addMsg(text || '📸 Фото задачи', 'user', false, imgSrc);
+  removePhoto();
+  addXP(5, false);
+
+  await sendAIWithText(text, imgB64, imgM);
+}
+
+function onKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); }
+}
+function resize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 110) + 'px';
+}
+
+// ===== MICROPHONE =====
+function toggleMic() {
+  if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+    addMsg('Микрофон не поддерживается. Попробуй Chrome! 🌐', 'bot', false); return;
+  }
+  isListening ? stopMic() : startMic();
+}
+
+function startMic() {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  recognition = new SR();
+  recognition.lang = subject === 'eng' ? 'en-US' : 'ru-RU';
+  recognition.continuous = false;
+  recognition.interimResults = false;
+  recognition.onstart = () => {
+    isListening = true;
+    const btn = document.getElementById('micBtn');
+    btn.classList.add('listening');
+    btn.textContent = '🔴';
+    document.getElementById('inp').placeholder = subject === 'eng' ? 'Говори по-английски... 🎤' : 'Говори... 🎤';
+  };
+  recognition.onresult = (e) => {
+    document.getElementById('inp').value = e.results[0][0].transcript;
+    stopMic();
+    setTimeout(() => send(), 300);
+  };
+  recognition.onerror = () => stopMic();
+  recognition.onend = () => stopMic();
+  recognition.start();
+}
+
+function stopMic() {
+  isListening = false;
+  if (recognition) { try { recognition.stop(); } catch(e){} }
+  const btn = document.getElementById('micBtn');
+  if (btn) { btn.classList.remove('listening'); btn.textContent = '🎤'; }
+  if (subject) document.getElementById('inp').placeholder = subject === 'eng' ? 'Напиши или скажи по-английски... 🎤' : 'Напиши вопрос или ответ...';
+}
+</script>
+</body>
+</html>
