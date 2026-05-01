@@ -1,663 +1,1354 @@
+
 <!DOCTYPE html>
 <html lang="ru">
-  
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>УмняшКа — репетитор Руслана</title>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Baloo+2:wght@700;800&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --pink: #ff6b9d;
-    --purple: #ab47bc;
-    --blue: #5c6bc0;
-    --orange: #ffa726;
-    --cyan: #26c6da;
-    --green: #66bb6a;
-    --yellow: #ffd54f;
-    --red: #ef5350;
-    --text: #2d1b4e;
-    --muted: #8b7aa8;
-    --ai-color: #7c4dff;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: 'Fredoka', sans-serif;
-    height: 100dvh;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    background: linear-gradient(135deg, #fce4ec 0%, #e1f5fe 50%, #f3e5f5 100%);
-    color: var(--text);
-  }
-
-  /* HEADER */
-  .header {
-    background: linear-gradient(135deg, #ff6b9d, #ab47bc, #5c6bc0);
-    padding: 12px 14px;
-    box-shadow: 0 4px 20px rgba(171,71,188,0.3);
-    flex-shrink: 0;
-  }
-  .header-top { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-  .owl {
-    width: 56px; height: 56px;
-    background: linear-gradient(135deg, #fff176, #ffb74d);
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 30px;
-    box-shadow: 0 0 0 3px rgba(255,255,255,0.3);
-    animation: wiggle 4s ease-in-out infinite;
-    flex-shrink: 0;
-  }
-  @keyframes wiggle { 0%,100%{transform:rotate(0)} 25%{transform:rotate(-6deg)} 75%{transform:rotate(6deg)} }
-  .header-info { color: #fff; flex: 1; }
-  .header-name { font-family: 'Baloo 2', cursive; font-size: 26px; font-weight: 800; text-shadow: 2px 2px 0 rgba(0,0,0,0.15); line-height: 1; }
-  .header-sub { font-size: 13px; font-weight: 600; opacity: 0.95; display: flex; align-items: center; gap: 5px; margin-top: 3px; }
-  .dot { width: 8px; height: 8px; background: #4caf50; border-radius: 50%; box-shadow: 0 0 6px #4caf50; animation: pulse 1.5s infinite; }
-  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
-  .header-btns { display: flex; gap: 6px; }
-  .hbtn {
-    width: 42px; height: 42px;
-    background: rgba(255,255,255,0.2);
-    border: 2px solid rgba(255,255,255,0.3);
-    border-radius: 50%; cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 20px; transition: all 0.2s; color: #fff;
-  }
-  .hbtn:hover { background: rgba(255,255,255,0.35); transform: scale(1.1); }
-  .hbtn.off { opacity: 0.45; }
-
-  .subjects { display: grid; grid-template-columns: repeat(4,1fr); gap: 5px; }
-  .subj {
-    background: rgba(255,255,255,0.2);
-    border: 2px solid rgba(255,255,255,0.3);
-    color: #fff; padding: 8px 3px;
-    border-radius: 12px; font-size: 12px; font-weight: 700;
-    cursor: pointer; transition: all 0.2s; text-align: center;
-    font-family: 'Fredoka', sans-serif;
-    display: flex; flex-direction: column; align-items: center; gap: 2px;
-  }
-  .subj .ic { font-size: 20px; }
-  .subj:hover { transform: scale(1.05); }
-  .subj.active { background: #fff; color: var(--text); box-shadow: 0 4px 12px rgba(0,0,0,0.2); transform: scale(1.05); }
-
-  /* XP */
-  .xp-wrap {
-    margin: 8px 12px 0; flex-shrink: 0;
-    background: linear-gradient(90deg, #fff9c4, #ffe082);
-    border: 2px solid var(--yellow); border-radius: 14px;
-    padding: 8px 12px; display: flex; align-items: center; gap: 8px;
-    box-shadow: 0 3px 10px rgba(255,213,79,0.3);
-  }
-  .xp-icon { font-size: 20px; animation: spin 4s linear infinite; }
-  @keyframes spin { from{transform:rotate(0)} to{transform:rotate(360deg)} }
-  .xp-track { flex: 1; height: 11px; background: rgba(255,255,255,0.6); border-radius: 10px; overflow: hidden; }
-  .xp-fill { height: 100%; background: linear-gradient(90deg, var(--pink), var(--orange), var(--green)); border-radius: 10px; width: 0%; transition: width 0.6s cubic-bezier(.34,1.56,.64,1); }
-  .xp-stars { font-size: 16px; }
-  .xp-count { font-size: 14px; font-weight: 800; color: #e65100; white-space: nowrap; }
-
-  /* CHAT */
-  .chat { flex: 1; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 10px; scroll-behavior: smooth; }
-  .chat::-webkit-scrollbar { width: 4px; }
-  .chat::-webkit-scrollbar-thumb { background: rgba(171,71,188,0.3); border-radius: 4px; }
-
-  .msg-row { display: flex; gap: 8px; align-items: flex-end; animation: popIn 0.35s cubic-bezier(.34,1.56,.64,1); }
-  .msg-row.user { flex-direction: row-reverse; }
-  @keyframes popIn { from{opacity:0;transform:translateY(16px) scale(0.85)} to{opacity:1;transform:none} }
-
-  .msg-av { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; box-shadow: 0 2px 8px rgba(0,0,0,0.12); }
-  .msg-av.bot { background: linear-gradient(135deg, #fff176, #ffb74d); }
-  .msg-av.user { background: linear-gradient(135deg, #81d4fa, #4fc3f7); }
-
-  .bubble { max-width: 80%; padding: 12px 16px; border-radius: 20px; font-size: 19px; line-height: 1.55; font-weight: 500; box-shadow: 0 3px 10px rgba(171,71,188,0.1); }
-  .bubble.bot { background: #fff; color: var(--text); border-bottom-left-radius: 4px; border: 2px solid rgba(255,154,158,0.3); }
-  .bubble.user { background: linear-gradient(135deg, #4fc3f7, #29b6f6); color: #fff; border-bottom-right-radius: 4px; font-weight: 600; }
-  .bubble.ai-bubble { border-color: rgba(124,77,255,0.3); }
-
-  .subj-tag { font-size: 11px; font-weight: 800; padding: 2px 9px; border-radius: 8px; display: inline-block; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
-  .ai-tag { font-size: 11px; font-weight: 800; padding: 2px 9px; border-radius: 8px; display: inline-block; margin-bottom: 6px; background: rgba(124,77,255,0.15); color: var(--ai-color); text-transform: uppercase; letter-spacing: 0.5px; }
-
-  .speak-btn { background: linear-gradient(135deg, #ce93d8, #ab47bc); border: none; cursor: pointer; width: 30px; height: 30px; border-radius: 50%; color: #fff; font-size: 14px; margin-left: 7px; vertical-align: middle; transition: all 0.2s; box-shadow: 0 2px 6px rgba(171,71,188,0.4); }
-  .speak-btn:hover { transform: scale(1.15); }
-
-  /* Image preview in chat */
-  .chat-img { max-width: 220px; border-radius: 14px; margin-top: 6px; display: block; box-shadow: 0 3px 10px rgba(0,0,0,0.15); }
-
-  .quick-replies { display: flex; flex-wrap: wrap; gap: 8px; margin-left: 48px; animation: popIn 0.3s ease 0.1s both; }
-  .qr { background: linear-gradient(135deg, #fff, #f3e5f5); border: 2px solid #ce93d8; color: #6a1b9a; padding: 8px 15px; border-radius: 20px; font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.2s; font-family: 'Fredoka', sans-serif; box-shadow: 0 3px 8px rgba(206,147,216,0.3); }
-  .qr:hover { transform: translateY(-2px) scale(1.05); }
-
-  .typing-dots { display: flex; gap: 5px; align-items: center; padding: 11px 15px; }
-  .typing-dots span { width: 9px; height: 9px; background: linear-gradient(135deg, var(--pink), var(--purple)); border-radius: 50%; animation: bounce 1.2s infinite; }
-  .typing-dots span:nth-child(2){animation-delay:0.2s}
-  .typing-dots span:nth-child(3){animation-delay:0.4s}
-  @keyframes bounce { 0%,60%,100%{transform:translateY(0);opacity:0.5} 30%{transform:translateY(-8px);opacity:1} }
-
-  /* AI thinking */
-  .ai-thinking { display: flex; gap: 5px; align-items: center; padding: 11px 15px; }
-  .ai-thinking span { width: 9px; height: 9px; background: linear-gradient(135deg, var(--ai-color), #b388ff); border-radius: 50%; animation: bounce 1.2s infinite; }
-  .ai-thinking span:nth-child(2){animation-delay:0.2s}
-  .ai-thinking span:nth-child(3){animation-delay:0.4s}
-
-  #reward { position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%) scale(0); background: linear-gradient(135deg, #ffd54f, #ffa726); color: #fff; padding: 18px 28px; border-radius: 20px; font-family: 'Baloo 2', cursive; font-size: 24px; font-weight: 800; box-shadow: 0 10px 40px rgba(255,167,38,0.5); z-index: 100; pointer-events: none; text-shadow: 2px 2px 0 rgba(0,0,0,0.2); }
-  #reward.show { animation: rewardPop 1.5s ease forwards; }
-  @keyframes rewardPop { 0%{transform:translate(-50%,-50%) scale(0) rotate(-15deg)} 20%{transform:translate(-50%,-50%) scale(1.2) rotate(5deg)} 40%{transform:translate(-50%,-50%) scale(1) rotate(0)} 80%{transform:translate(-50%,-50%) scale(1);opacity:1} 100%{transform:translate(-50%,-160%) scale(0.8);opacity:0} }
-
-  .welcome { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; text-align: center; padding: 24px; gap: 10px; }
-  .welcome .big-owl { font-size: 72px; animation: bounce 2s infinite; }
-  .welcome h2 { font-family: 'Baloo 2', cursive; font-size: 26px; font-weight: 800; color: var(--purple); }
-  .welcome p { color: var(--muted); font-size: 18px; font-weight: 600; }
-
-  /* INPUT AREA */
-  .input-area { padding: 10px 12px 14px; background: rgba(255,255,255,0.88); backdrop-filter: blur(20px); border-top: 2px solid rgba(171,71,188,0.15); display: flex; flex-direction: column; gap: 8px; flex-shrink: 0; }
-
-  .input-row { display: flex; gap: 8px; align-items: flex-end; }
-
-  /* Photo preview */
-  .photo-preview { display: none; position: relative; }
-  .photo-preview img { width: 70px; height: 70px; object-fit: cover; border-radius: 12px; border: 2px solid var(--purple); }
-  .photo-preview .del-photo { position: absolute; top: -6px; right: -6px; width: 22px; height: 22px; background: var(--red); border: none; border-radius: 50%; color: #fff; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: 800; }
-
-  textarea {
-    flex: 1; background: #fff; border: 2px solid #e1bee7; border-radius: 22px;
-    padding: 11px 16px; font-family: 'Fredoka', sans-serif;
-    font-size: 17px; font-weight: 500; color: var(--text);
-    resize: none; outline: none; max-height: 110px; line-height: 1.4;
-    transition: all 0.2s;
-  }
-  textarea::placeholder { color: var(--muted); }
-  textarea:focus { border-color: var(--purple); box-shadow: 0 0 0 4px rgba(171,71,188,0.15); }
-
-  .btn-row { display: flex; gap: 6px; align-items: center; justify-content: flex-end; }
-
-  .action-btn { height: 46px; border: none; border-radius: 23px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; font-family: 'Fredoka', sans-serif; font-size: 15px; font-weight: 700; transition: all 0.2s; padding: 0 16px; flex-shrink: 0; }
-  .send-btn { background: linear-gradient(135deg, var(--pink), var(--purple)); color: #fff; box-shadow: 0 4px 12px rgba(171,71,188,0.4); width: 46px; padding: 0; border-radius: 50%; font-size: 20px; }
-  .send-btn:hover { transform: scale(1.1) rotate(15deg); }
-  .send-btn:active { transform: scale(0.92); }
-  .send-btn:disabled { opacity: 0.5; cursor: default; transform: none; }
-  .ai-btn { background: linear-gradient(135deg, #7c4dff, #b388ff); color: #fff; box-shadow: 0 4px 12px rgba(124,77,255,0.4); }
-  .ai-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(124,77,255,0.5); }
-  .ai-btn:disabled { opacity: 0.5; cursor: default; transform: none; }
-  .mic-btn { background: linear-gradient(135deg, #66bb6a, #43a047); color: #fff; box-shadow: 0 4px 12px rgba(102,187,106,0.4); width: 46px; padding: 0; border-radius: 50%; font-size: 20px; }
-  .mic-btn:hover { transform: scale(1.1); }
-  .mic-btn.listening { background: linear-gradient(135deg, var(--red), #c62828); animation: micPulse 1s ease-in-out infinite; }
-  .photo-btn { background: linear-gradient(135deg, #ffa726, #ff7043); color: #fff; box-shadow: 0 4px 12px rgba(255,112,67,0.4); width: 46px; padding: 0; border-radius: 50%; font-size: 20px; }
-  .photo-btn:hover { transform: scale(1.1); }
-  @keyframes micPulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.15)} }
-
-  #fileInput { display: none; }
+:root {
+--pink: #ff6b9d;
+--purple: #ab47bc;
+--blue: #5c6bc0;
+--orange: #ffa726;
+--cyan: #26c6da;
+--green: #66bb6a;
+--yellow: #ffd54f;
+--red: #ef5350;
+--text: #2d1b4e;
+--muted: #8b7aa8;
+--ai-color: #7c4dff;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+font-family: 'Fredoka', sans-serif;
+height: 100dvh;
+display: flex;
+flex-direction: column;
+overflow: hidden;
+background: linear-gradient(135deg, #fce4ec 0%, #e1f5fe 50%, #f3e5f5 100%);
+color: var(--text);
+}
+.header {
+background: linear-gradient(135deg, #ff6b9d, #ab47bc, #5c6bc0);
+padding: 12px 14px;
+box-shadow: 0 4px 20px rgba(171,71,188,0.3);
+flex-shrink: 0;
+}
+.header-top { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.owl {
+width: 56px; height: 56px;
+background: linear-gradient(135deg, #fff176, #ffb74d);
+border-radius: 50%;
+display: flex; align-items: center; justify-content: center;
+font-size: 30px;
+box-shadow: 0 0 0 3px rgba(255,255,255,0.3);
+animation: wiggle 4s ease-in-out infinite;
+flex-shrink: 0;
+}
+@keyframes wiggle { 0%,100%{transform:rotate(0)} 25%{transform:rotate(-6deg)} 75%{transform:rotate(6deg)} }
+.header-info { color: #fff; flex: 1; }
+.header-name { font-family: 'Baloo 2', cursive; font-size: 26px; font-weight: 800; text-shadow: 2px 2px 0 rgba(0,0,0,0.15); line-height: 1; }
+.header-sub { font-size: 13px; font-weight: 600; opacity: 0.95; display: flex; align-items: center; gap: 5px; margin-top: 3px; }
+.dot { width: 8px; height: 8px; background: #4caf50; border-radius: 50%; box-shadow: 0 0 6px #4caf50; animation: pulse 1.5s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+.header-btns { display: flex; gap: 6px; }
+.hbtn {
+width: 42px; height: 42px;
+background: rgba(255,255,255,0.2);
+border: 2px solid rgba(255,255,255,0.3);
+border-radius: 50%; cursor: pointer;
+display: flex; align-items: center; justify-content: center;
+font-size: 20px; transition: all 0.2s; color: #fff;
+}
+.hbtn:hover { background: rgba(255,255,255,0.35); transform: scale(1.1); }
+.hbtn.off { opacity: 0.45; }
+.hbtn.talking { background: linear-gradient(135deg, #ff5252, #d32f2f); border-color: #fff; box-shadow: 0 0 0 0 rgba(255,82,82,0.7); animation: talkPulse 1.5s infinite; }
+@keyframes talkPulse { 0%{box-shadow: 0 0 0 0 rgba(255,82,82,0.7)} 70%{box-shadow: 0 0 0 14px rgba(255,82,82,0)} 100%{box-shadow: 0 0 0 0 rgba(255,82,82,0)} }
+.talk-status {
+  position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%);
+  background: linear-gradient(135deg, #ff6b9d, #ab47bc);
+  color: #fff; padding: 10px 20px; border-radius: 30px;
+  font-weight: 700; font-size: 15px; z-index: 99;
+  box-shadow: 0 6px 20px rgba(171,71,188,0.5);
+  display: flex; align-items: center; gap: 10px;
+  animation: slideUp 0.3s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes slideUp { from{opacity:0;transform:translateX(-50%) translateY(20px)} to{opacity:1;transform:translateX(-50%) translateY(0)} }
+.talk-status .pulse-dot { width: 10px; height: 10px; background: #fff; border-radius: 50%; animation: pulseBlink 1s infinite; }
+@keyframes pulseBlink { 0%,100%{opacity:1; transform:scale(1)} 50%{opacity:0.5; transform:scale(1.3)} }
+.talk-waves { display: inline-flex; gap: 3px; align-items: center; }
+.talk-waves span { width: 3px; background: #fff; border-radius: 3px; animation: wave 0.9s infinite; }
+.talk-waves span:nth-child(1){height:8px; animation-delay:0s}
+.talk-waves span:nth-child(2){height:14px; animation-delay:0.15s}
+.talk-waves span:nth-child(3){height:10px; animation-delay:0.3s}
+.talk-waves span:nth-child(4){height:16px; animation-delay:0.45s}
+.talk-waves span:nth-child(5){height:8px; animation-delay:0.6s}
+@keyframes wave { 0%,100%{transform:scaleY(1)} 50%{transform:scaleY(1.7)} }
+.subjects { display: grid; grid-template-columns: repeat(4,1fr); gap: 5px; }
+.subj {
+background: rgba(255,255,255,0.2);
+border: 2px solid rgba(255,255,255,0.3);
+color: #fff; padding: 8px 3px;
+border-radius: 12px; font-size: 12px; font-weight: 700;
+cursor: pointer; transition: all 0.2s; text-align: center;
+font-family: 'Fredoka', sans-serif;
+display: flex; flex-direction: column; align-items: center; gap: 2px;
+}
+.subj .ic { font-size: 20px; }
+.subj:hover { transform: scale(1.05); }
+.subj.active { background: #fff; color: var(--text); box-shadow: 0 4px 12px rgba(0,0,0,0.2); transform: scale(1.05); }
+.xp-wrap {
+margin: 8px 12px 0; flex-shrink: 0;
+background: linear-gradient(90deg, #fff9c4, #ffe082);
+border: 2px solid var(--yellow); border-radius: 14px;
+padding: 8px 12px; display: flex; align-items: center; gap: 8px;
+box-shadow: 0 3px 10px rgba(255,213,79,0.3);
+}
+.xp-icon { font-size: 20px; animation: spin 4s linear infinite; }
+@keyframes spin { from{transform:rotate(0)} to{transform:rotate(360deg)} }
+.xp-track { flex: 1; height: 11px; background: rgba(255,255,255,0.6); border-radius: 10px; overflow: hidden; }
+.xp-fill { height: 100%; background: linear-gradient(90deg, var(--pink), var(--orange), var(--green)); border-radius: 10px; width: 0%; transition: width 0.6s cubic-bezier(.34,1.56,.64,1); }
+.xp-stars { font-size: 16px; }
+.xp-count { font-size: 14px; font-weight: 800; color: #e65100; white-space: nowrap; }
+.chat { flex: 1; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 10px; scroll-behavior: smooth; }
+.chat::-webkit-scrollbar { width: 4px; }
+.chat::-webkit-scrollbar-thumb { background: rgba(171,71,188,0.3); border-radius: 4px; }
+.msg-row { display: flex; gap: 8px; align-items: flex-end; animation: popIn 0.35s cubic-bezier(.34,1.56,.64,1); }
+.msg-row.user { flex-direction: row-reverse; }
+@keyframes popIn { from{opacity:0;transform:translateY(16px) scale(0.85)} to{opacity:1;transform:none} }
+.msg-av { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; box-shadow: 0 2px 8px rgba(0,0,0,0.12); }
+.msg-av.bot { background: linear-gradient(135deg, #fff176, #ffb74d); }
+.msg-av.user { background: linear-gradient(135deg, #81d4fa, #4fc3f7); }
+.bubble { max-width: 80%; padding: 12px 16px; border-radius: 20px; font-size: 19px; line-height: 1.55; font-weight: 500; box-shadow: 0 3px 10px rgba(171,71,188,0.1); }
+.bubble.bot { background: #fff; color: var(--text); border-bottom-left-radius: 4px; border: 2px solid rgba(255,154,158,0.3); }
+.bubble.user { background: linear-gradient(135deg, #4fc3f7, #29b6f6); color: #fff; border-bottom-right-radius: 4px; font-weight: 600; }
+.bubble.ai-bubble { border-color: rgba(124,77,255,0.3); }
+.subj-tag { font-size: 11px; font-weight: 800; padding: 2px 9px; border-radius: 8px; display: inline-block; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+.ai-tag { font-size: 11px; font-weight: 800; padding: 2px 9px; border-radius: 8px; display: inline-block; margin-bottom: 6px; background: rgba(124,77,255,0.15); color: var(--ai-color); text-transform: uppercase; letter-spacing: 0.5px; }
+.speak-btn { background: linear-gradient(135deg, #ce93d8, #ab47bc); border: none; cursor: pointer; width: 30px; height: 30px; border-radius: 50%; color: #fff; font-size: 14px; margin-left: 7px; vertical-align: middle; transition: all 0.2s; box-shadow: 0 2px 6px rgba(171,71,188,0.4); }
+.speak-btn:hover { transform: scale(1.15); }
+.chat-img { max-width: 220px; border-radius: 14px; margin-top: 6px; display: block; box-shadow: 0 3px 10px rgba(0,0,0,0.15); }
+.quick-replies { display: flex; flex-wrap: wrap; gap: 8px; margin-left: 48px; animation: popIn 0.3s ease 0.1s both; }
+.qr { background: linear-gradient(135deg, #fff, #f3e5f5); border: 2px solid #ce93d8; color: #6a1b9a; padding: 8px 15px; border-radius: 20px; font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.2s; font-family: 'Fredoka', sans-serif; box-shadow: 0 3px 8px rgba(206,147,216,0.3); }
+.qr:hover { transform: translateY(-2px) scale(1.05); }
+.typing-dots { display: flex; gap: 5px; align-items: center; padding: 11px 15px; }
+.typing-dots span { width: 9px; height: 9px; background: linear-gradient(135deg, var(--pink), var(--purple)); border-radius: 50%; animation: bounce 1.2s infinite; }
+.typing-dots span:nth-child(2){animation-delay:0.2s}
+.typing-dots span:nth-child(3){animation-delay:0.4s}
+@keyframes bounce { 0%,60%,100%{transform:translateY(0);opacity:0.5} 30%{transform:translateY(-8px);opacity:1} }
+.ai-thinking { display: flex; gap: 5px; align-items: center; padding: 11px 15px; }
+.ai-thinking span { width: 9px; height: 9px; background: linear-gradient(135deg, var(--ai-color), #b388ff); border-radius: 50%; animation: bounce 1.2s infinite; }
+.ai-thinking span:nth-child(2){animation-delay:0.2s}
+.ai-thinking span:nth-child(3){animation-delay:0.4s}
+#reward { position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%) scale(0); background: linear-gradient(135deg, #ffd54f, #ffa726); color: #fff; padding: 18px 28px; border-radius: 20px; font-family: 'Baloo 2', cursive; font-size: 24px; font-weight: 800; box-shadow: 0 10px 40px rgba(255,167,38,0.5); z-index: 100; pointer-events: none; text-shadow: 2px 2px 0 rgba(0,0,0,0.2); }
+#reward.show { animation: rewardPop 1.5s ease forwards; }
+@keyframes rewardPop { 0%{transform:translate(-50%,-50%) scale(0) rotate(-15deg)} 20%{transform:translate(-50%,-50%) scale(1.2) rotate(5deg)} 40%{transform:translate(-50%,-50%) scale(1) rotate(0)} 80%{transform:translate(-50%,-50%) scale(1);opacity:1} 100%{transform:translate(-50%,-160%) scale(0.8);opacity:0} }
+.welcome { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; text-align: center; padding: 24px; gap: 10px; }
+.welcome .big-owl { font-size: 72px; animation: bounce 2s infinite; }
+.welcome h2 { font-family: 'Baloo 2', cursive; font-size: 26px; font-weight: 800; color: var(--purple); }
+.welcome p { color: var(--muted); font-size: 18px; font-weight: 600; }
+.input-area { padding: 10px 12px 14px; background: rgba(255,255,255,0.88); backdrop-filter: blur(20px); border-top: 2px solid rgba(171,71,188,0.15); display: flex; flex-direction: column; gap: 8px; flex-shrink: 0; }
+.input-row { display: flex; gap: 8px; align-items: flex-end; }
+.photo-preview { display: none; position: relative; }
+.photo-preview img { width: 70px; height: 70px; object-fit: cover; border-radius: 12px; border: 2px solid var(--purple); }
+.photo-preview .del-photo { position: absolute; top: -6px; right: -6px; width: 22px; height: 22px; background: var(--red); border: none; border-radius: 50%; color: #fff; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: 800; }
+textarea {
+flex: 1; background: #fff; border: 2px solid #e1bee7; border-radius: 22px;
+padding: 11px 16px; font-family: 'Fredoka', sans-serif;
+font-size: 17px; font-weight: 500; color: var(--text);
+resize: none; outline: none; max-height: 110px; line-height: 1.4;
+transition: all 0.2s;
+}
+textarea::placeholder { color: var(--muted); }
+textarea:focus { border-color: var(--purple); box-shadow: 0 0 0 4px rgba(171,71,188,0.15); }
+.btn-row { display: flex; gap: 6px; align-items: center; justify-content: flex-end; }
+.action-btn { height: 46px; border: none; border-radius: 23px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; font-family: 'Fredoka', sans-serif; font-size: 15px; font-weight: 700; transition: all 0.2s; padding: 0 16px; flex-shrink: 0; }
+.send-btn { background: linear-gradient(135deg, var(--pink), var(--purple)); color: #fff; box-shadow: 0 4px 12px rgba(171,71,188,0.4); width: 46px; padding: 0; border-radius: 50%; font-size: 20px; }
+.send-btn:hover { transform: scale(1.1) rotate(15deg); }
+.send-btn:active { transform: scale(0.92); }
+.send-btn:disabled { opacity: 0.5; cursor: default; transform: none; }
+.ai-btn { background: linear-gradient(135deg, #7c4dff, #b388ff); color: #fff; box-shadow: 0 4px 12px rgba(124,77,255,0.4); }
+.ai-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(124,77,255,0.5); }
+.ai-btn:disabled { opacity: 0.5; cursor: default; transform: none; }
+.mic-btn { background: linear-gradient(135deg, #66bb6a, #43a047); color: #fff; box-shadow: 0 4px 12px rgba(102,187,106,0.4); width: 46px; padding: 0; border-radius: 50%; font-size: 20px; }
+.mic-btn:hover { transform: scale(1.1); }
+.mic-btn.listening { background: linear-gradient(135deg, var(--red), #c62828); animation: micPulse 1s ease-in-out infinite; }
+.photo-btn { background: linear-gradient(135deg, #ffa726, #ff7043); color: #fff; box-shadow: 0 4px 12px rgba(255,112,67,0.4); width: 46px; padding: 0; border-radius: 50%; font-size: 20px; }
+.photo-btn:hover { transform: scale(1.1); }
+@keyframes micPulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.15)} }
+#fileInput { display: none; }
 </style>
 </head>
 <body>
-
 <div class="header">
-  <div class="header-top">
-    <div class="owl">🦉</div>
-    <div class="header-info">
-      <div class="header-name">УмняшКа</div>
-      <div class="header-sub"><span class="dot"></span> онлайн · репетитор Руслана · 5 класс</div>
-    </div>
-    <div class="header-btns">
-      <button class="hbtn" id="voiceBtn" onclick="toggleVoice()" title="Голос">🔊</button>
-    </div>
-  </div>
-  <div class="subjects">
-    <div class="subj" data-s="math" onclick="pick('math')"><span class="ic">🔢</span>Математика</div>
-    <div class="subj" data-s="rus"  onclick="pick('rus')"><span class="ic">📝</span>Русский</div>
-    <div class="subj" data-s="lit"  onclick="pick('lit')"><span class="ic">📖</span>Литература</div>
-    <div class="subj" data-s="eng"  onclick="pick('eng')"><span class="ic">🇬🇧</span>English</div>
-    <div class="subj" data-s="hist" onclick="pick('hist')"><span class="ic">🏛️</span>История</div>
-    <div class="subj" data-s="geo"  onclick="pick('geo')"><span class="ic">🌍</span>География</div>
-    <div class="subj" data-s="bio"  onclick="pick('bio')"><span class="ic">🌱</span>Биология</div>
-    <div class="subj" data-s="free" onclick="pick('free')"><span class="ic">💬</span>Свободно</div>
-  </div>
+<div class="header-top">
+<div class="owl">🦉</div>
+<div class="header-info">
+<div class="header-name">УмняшКа</div>
+<div class="header-sub"><span class="dot"></span> онлайн · репетитор Руслана · 5 класс</div>
 </div>
-
+<div class="header-btns">
+<button class="hbtn" id="talkBtn" onclick="toggleTalkMode()" title="Режим Разговор">🎙️</button>
+<button class="hbtn" id="voiceBtn" onclick="toggleVoice()" title="Голос">🔊</button>
+</div>
+</div>
+<div class="subjects">
+<div class="subj" data-s="math" onclick="pick('math')"><span class="ic">🔢</span>Математика</div>
+<div class="subj" data-s="rus" onclick="pick('rus')"><span class="ic">📝</span>Русский</div>
+<div class="subj" data-s="lit" onclick="pick('lit')"><span class="ic">📖</span>Литература</div>
+<div class="subj" data-s="eng" onclick="pick('eng')"><span class="ic">🇬🇧</span>English</div>
+<div class="subj" data-s="hist" onclick="pick('hist')"><span class="ic">🏛️</span>История</div>
+<div class="subj" data-s="geo" onclick="pick('geo')"><span class="ic">🌍</span>География</div>
+<div class="subj" data-s="bio" onclick="pick('bio')"><span class="ic">🌱</span>Биология</div>
+<div class="subj" data-s="free" onclick="pick('free')"><span class="ic">💬</span>Свободно</div>
+</div>
+</div>
 <div class="xp-wrap" id="xpWrap" style="display:none">
-  <div class="xp-icon">⚡</div>
-  <div class="xp-track"><div class="xp-fill" id="xpFill"></div></div>
-  <div class="xp-stars" id="xpStars">☆☆☆☆☆</div>
-  <div class="xp-count" id="xpCount">0 XP</div>
+<div class="xp-icon">⚡</div>
+<div class="xp-track"><div class="xp-fill" id="xpFill"></div></div>
+<div class="xp-stars" id="xpStars">☆☆☆☆☆</div>
+<div class="xp-count" id="xpCount">0 XP</div>
 </div>
-
 <div class="chat" id="chat">
-  <div class="welcome" id="welcome">
-    <div class="big-owl">🦉</div>
-    <h2>Привет, Руслан!</h2>
-    <p>Я УмняшКа — твой умный репетитор!<br>Выбери предмет вверху и начнём 🚀</p>
-  </div>
+<div class="welcome" id="welcome">
+<div class="big-owl">🦉</div>
+<h2>Привет, Руслан!</h2>
+<p>Я УмняшКа — твой умный репетитор!<br>Выбери предмет вверху и начнём 🚀</p>
 </div>
-
+</div>
 <div id="reward"></div>
-
-<input type="file" id="fileInput" accept="image/*" onchange="handlePhoto(event)">
-
+<input type="file" id="fileInput" accept="image/*" capture="environment" onchange="handlePhoto(event)">
 <div class="input-area">
-  <div class="photo-preview" id="photoPreview">
-    <img id="photoThumb" src="" alt="">
-    <button class="del-photo" onclick="removePhoto()">✕</button>
-  </div>
-  <div class="input-row">
-    <textarea id="inp" placeholder="Напиши вопрос или ответ..." rows="1"
-      onkeydown="onKey(event)" oninput="resize(this)"></textarea>
-  </div>
-  <div class="btn-row">
-    <button class="action-btn photo-btn" onclick="document.getElementById('fileInput').click()" title="Фото задачи">📸</button>
-    <button class="action-btn mic-btn" id="micBtn" onclick="toggleMic()" title="Говори голосом">🎤</button>
-    <button class="action-btn ai-btn" id="aiBtn" onclick="sendAI()" disabled>⭐ Спросить ИИ</button>
-    <button class="action-btn send-btn" id="sendBtn" onclick="send()" disabled>➤</button>
-  </div>
+<div class="photo-preview" id="photoPreview">
+<img id="photoThumb" src="" alt="">
+<button class="del-photo" onclick="removePhoto()">✕</button>
+</div>
+<div class="input-row">
+<textarea id="inp" placeholder="Напиши вопрос или ответ..." rows="1"
+onkeydown="onKey(event)" oninput="resize(this)"></textarea>
+</div>
+<div class="btn-row">
+<button class="action-btn photo-btn" onclick="document.getElementById('fileInput').click()" title="Фото задачи">📸</button>
+<button class="action-btn mic-btn" id="micBtn" onclick="toggleMic()" title="Говори голосом">🎤</button>
+<button class="action-btn ai-btn" id="aiBtn" onclick="sendAI()" disabled>⭐ Спросить ИИ</button>
+<button class="action-btn send-btn" id="sendBtn" onclick="send()" disabled>➤</button>
+</div>
 </div>
 
 <script>
-const API_KEY = 'sk-or-vv-3fde9d499472f0a0ae57a3bf44ad4131dc2bb734bc4b31eae3d39eed8623be82';
-const API_URL = 'https://api.vsegpt.ru/v1/chat/completions';
-const AI_MODEL = 'anthropic/claude-sonnet-4-5';
+// ============================================================
+// БАЗА ЗНАНИЙ УМНЯШКИ — программа 5 класса
+// Каждая запись: { keys: [синонимы запроса], answer: 'ответ', subject: 'код' }
+// ============================================================
 
-const SUBJECTS = {
-  math: { name: '🔢 Математика', color: '#ff6b9d', lang: 'ru',
-    greet: 'Ура, математика! 🔢 Что будем разбирать? Дроби, уравнения, геометрию? Или есть задача из учебника — фотографируй и присылай! 📸',
-    hints: ['Дроби', 'Уравнения', 'Геометрия', 'Сфотографировать задачу'],
-    system: 'Ты УмняшКа — дружелюбный репетитор-сова для ученика 5 класса по имени Руслан. Предмет: Математика. Объясняй просто, с примерами из жизни, хвали за правильные ответы, при ошибке направляй мягко. Отвечай коротко (3-5 предложений). Без markdown разметки.' },
-  rus: { name: '📝 Русский язык', color: '#ffa726', lang: 'ru',
-    greet: 'Русский язык — это красота! ✏️ Что изучаем? Части речи, орфография, или сочинение пишем?',
-    hints: ['Части речи', 'Орфография', 'Пунктуация', 'Помоги с сочинением'],
-    system: 'Ты УмняшКа — дружелюбный репетитор-сова для ученика 5 класса по имени Руслан. Предмет: Русский язык. Объясняй правила просто, с примерами, хвали за правильные ответы. Отвечай коротко (3-5 предложений). Без markdown.' },
-  lit: { name: '📖 Литература', color: '#e91e63', lang: 'ru',
-    greet: 'Литература — это целый мир! 📖 Что читаем? Могу помочь с пересказом, анализом героев или сочинением!',
-    hints: ['Пересказ произведения', 'Анализ героя', 'Помоги с сочинением', 'Что означает этот отрывок'],
-    system: 'Ты УмняшКа — дружелюбный репетитор-сова для ученика 5 класса по имени Руслан. Предмет: Литература. Помогай с пересказами, анализом произведений, сочинениями. Объясняй интересно. Отвечай коротко (3-5 предложений). Без markdown.' },
-  eng: { name: '🇬🇧 English', color: '#5c6bc0', lang: 'en',
-    greet: 'Wow, English time! 🇬🇧 Что учим? Слова, грамматику, или попрактикуем диалог?',
-    hints: ['Семья (Family)', 'Глагол to be', 'Present Simple', 'Переведи фразу'],
-    system: 'You are UmnyashKa — a friendly owl tutor for a 5th grade student named Ruslan. Subject: English. Explain in both Russian and English. Praise correct answers warmly. Keep answers short (3-5 sentences). No markdown.' },
-  hist: { name: '🏛️ История', color: '#ab47bc', lang: 'ru',
-    greet: 'История — это путешествие во времени! 🏛️ Какой период изучаем? Древний мир, Средневековье?',
-    hints: ['Древний Египет', 'Древняя Греция', 'Древний Рим', 'Средневековье'],
-    system: 'Ты УмняшКа — дружелюбный репетитор-сова для ученика 5 класса по имени Руслан. Предмет: История. Рассказывай интересно, с яркими деталями. Хвали за правильные ответы. Отвечай коротко (3-5 предложений). Без markdown.' },
-  geo: { name: '🌍 География', color: '#26c6da', lang: 'ru',
-    greet: 'Поехали в путешествие! 🌍 Материки, климат, строение Земли — что изучаем?',
-    hints: ['Строение Земли', 'Материки', 'Природные зоны', 'Океаны'],
-    system: 'Ты УмняшКа — дружелюбный репетитор-сова для ученика 5 класса по имени Руслан. Предмет: География. Объясняй с примерами, хвали за правильные ответы. Отвечай коротко (3-5 предложений). Без markdown.' },
-  bio: { name: '🌱 Биология', color: '#66bb6a', lang: 'ru',
-    greet: 'Биология — наука о жизни! 🌱 Что изучаем? Растения, животные, тело человека?',
-    hints: ['Растения', 'Животные', 'Тело человека', 'Грибы'],
-    system: 'Ты УмняшКа — дружелюбный репетитор-сова для ученика 5 класса по имени Руслан. Предмет: Биология. Объясняй с примерами из жизни, хвали за правильные ответы. Отвечай коротко (3-5 предложений). Без markdown.' },
-  free: { name: '💬 Свободно', color: '#7c4dff', lang: 'ru',
-    greet: 'Свободный режим! 💬 Спрашивай всё что хочешь — я помогу с любым вопросом! Или пришли фото задачи 📸',
-    hints: ['Помоги с домашним заданием', 'Объясни тему', 'Проверь мой ответ', 'Не понимаю задачу'],
-    system: 'Ты УмняшКа — дружелюбный репетитор-сова для ученика 5 класса по имени Руслан. Помогай с любыми учебными вопросами. Отвечай просто и понятно, хвали за старание. Без markdown.' }
+const KNOWLEDGE = [
+
+// ========== МАТЕМАТИКА ==========
+{ keys: ['сколько будет 2+2', '2+2', 'два плюс два'], answer: '2 + 2 = 4 ✏️ Лёгкий вопрос! 😊', subject: 'math' },
+{ keys: ['таблица умножения', 'умножение таблица'], answer: 'Таблица умножения нужна наизусть! Базово: 2×2=4, 3×3=9, 4×4=16, 5×5=25, 6×6=36, 7×7=49, 8×8=64, 9×9=81, 10×10=100. Хочешь, спрошу тебя? 🔢', subject: 'math' },
+{ keys: ['что такое дробь', 'дробь', 'дроби это'], answer: 'Дробь — это часть от целого. Например, 1/2 (одна вторая) — это половина. 1/4 — четверть, 3/4 — три четверти. Сверху числитель, снизу знаменатель. 🍕', subject: 'math' },
+{ keys: ['числитель', 'что такое числитель'], answer: 'Числитель — это верхнее число дроби. Он показывает, сколько частей мы взяли. В дроби 3/5 числитель — это 3. ✏️', subject: 'math' },
+{ keys: ['знаменатель', 'что такое знаменатель'], answer: 'Знаменатель — это нижнее число дроби. Он показывает, на сколько частей разделили целое. В дроби 3/5 знаменатель — это 5. ✏️', subject: 'math' },
+{ keys: ['сложение дробей', 'как складывать дроби', 'сложить дроби'], answer: 'Дроби с одинаковым знаменателем складываем так: складываем числители, знаменатель оставляем. Пример: 1/5 + 2/5 = 3/5. С разными знаменателями — сначала приводим к общему знаменателю! 🔢', subject: 'math' },
+{ keys: ['вычитание дробей', 'как вычитать дроби'], answer: 'Дроби с одинаковым знаменателем вычитаем так: из числителя вычитаем числитель, знаменатель оставляем. Пример: 4/7 − 1/7 = 3/7. ✏️', subject: 'math' },
+{ keys: ['умножение дробей', 'как умножать дроби'], answer: 'Чтобы умножить дробь на дробь — числитель умножаем на числитель, знаменатель на знаменатель. Пример: 2/3 × 3/4 = 6/12 = 1/2. 🎯', subject: 'math' },
+{ keys: ['деление дробей', 'как делить дроби'], answer: 'Чтобы разделить дробь на дробь — первую дробь умножаем на перевёрнутую вторую. Пример: 2/3 : 4/5 = 2/3 × 5/4 = 10/12 = 5/6. 🔢', subject: 'math' },
+{ keys: ['правильная дробь'], answer: 'Правильная дробь — та, у которой числитель меньше знаменателя. Например, 2/5, 3/7, 1/2. Она всегда меньше 1. ✏️', subject: 'math' },
+{ keys: ['неправильная дробь'], answer: 'Неправильная дробь — та, у которой числитель больше или равен знаменателю. Например, 7/5, 9/3. Она больше или равна 1. Её можно перевести в смешанное число! ✏️', subject: 'math' },
+{ keys: ['смешанное число', 'смешанная дробь'], answer: 'Смешанное число — это сумма целого числа и дроби. Например, 2¾ — это 2 целых и три четверти. Получается, если у неправильной дроби выделить целую часть. ✏️', subject: 'math' },
+{ keys: ['десятичная дробь'], answer: 'Десятичная дробь записывается через запятую: 0,5 — это 5/10 = 1/2. 0,25 — это 25/100 = 1/4. После запятой идут десятые, сотые, тысячные. 🔢', subject: 'math' },
+{ keys: ['что такое процент', 'процент'], answer: 'Процент — это сотая часть числа. 1% = 1/100 = 0,01. 50% от числа — это половина. 25% — четверть. 100% — всё число целиком. 💯', subject: 'math' },
+{ keys: ['как найти процент', 'найти процент от числа'], answer: 'Чтобы найти процент от числа: число × процент : 100. Пример: 30% от 200 = 200 × 30 : 100 = 60. ✏️', subject: 'math' },
+{ keys: ['порядок действий', 'правила вычислений'], answer: 'Порядок действий: 1) скобки, 2) умножение и деление (по очереди слева направо), 3) сложение и вычитание (тоже слева направо). Запомни: «скобки → ×÷ → +−». ✏️', subject: 'math' },
+{ keys: ['что такое уравнение', 'уравнение'], answer: 'Уравнение — это равенство с неизвестным числом (обычно x). Пример: x + 5 = 12. Решить уравнение — значит найти x. Здесь x = 7. ✏️', subject: 'math' },
+{ keys: ['как решать уравнение', 'решить уравнение'], answer: 'Чтобы найти x в уравнении вида x + a = b: x = b − a. Пример: x + 3 = 10, значит x = 10 − 3 = 7. Если x · a = b, то x = b : a. 🎯', subject: 'math' },
+{ keys: ['как найти неизвестное слагаемое'], answer: 'Чтобы найти неизвестное слагаемое — из суммы вычесть известное слагаемое. Пример: x + 4 = 9, x = 9 − 4 = 5. ✏️', subject: 'math' },
+{ keys: ['как найти неизвестное вычитаемое'], answer: 'Чтобы найти неизвестное вычитаемое — из уменьшаемого вычесть разность. Пример: 10 − x = 3, x = 10 − 3 = 7. ✏️', subject: 'math' },
+{ keys: ['как найти неизвестный множитель'], answer: 'Чтобы найти неизвестный множитель — произведение разделить на известный множитель. Пример: x · 4 = 20, x = 20 : 4 = 5. ✏️', subject: 'math' },
+{ keys: ['как найти неизвестное делимое'], answer: 'Чтобы найти неизвестное делимое — частное умножить на делитель. Пример: x : 3 = 6, x = 6 · 3 = 18. ✏️', subject: 'math' },
+{ keys: ['как найти неизвестный делитель'], answer: 'Чтобы найти неизвестный делитель — делимое разделить на частное. Пример: 24 : x = 4, x = 24 : 4 = 6. ✏️', subject: 'math' },
+{ keys: ['площадь прямоугольника'], answer: 'Площадь прямоугольника = длина × ширина. Пример: длина 5 см, ширина 3 см → S = 5 × 3 = 15 см². 📐', subject: 'math' },
+{ keys: ['периметр прямоугольника'], answer: 'Периметр прямоугольника = (длина + ширина) × 2. Пример: длина 5 см, ширина 3 см → P = (5+3) × 2 = 16 см. 📐', subject: 'math' },
+{ keys: ['площадь квадрата'], answer: 'Площадь квадрата = сторона × сторона (или сторона²). Пример: сторона 4 см → S = 4 × 4 = 16 см². 📐', subject: 'math' },
+{ keys: ['периметр квадрата'], answer: 'Периметр квадрата = сторона × 4. Пример: сторона 5 см → P = 5 × 4 = 20 см. 📐', subject: 'math' },
+{ keys: ['объём прямоугольного параллелепипеда', 'объем параллелепипеда'], answer: 'Объём прямоугольного параллелепипеда = длина × ширина × высота. Пример: 4 × 3 × 2 = 24 см³. 📦', subject: 'math' },
+{ keys: ['объём куба', 'объем куба'], answer: 'Объём куба = ребро × ребро × ребро (или ребро³). Пример: ребро 3 см → V = 3 × 3 × 3 = 27 см³. 📦', subject: 'math' },
+{ keys: ['что такое прямой угол', 'прямой угол'], answer: 'Прямой угол равен 90°. Это угол, который получается, когда две прямые пересекаются перпендикулярно. У квадрата и прямоугольника все углы прямые. 📐', subject: 'math' },
+{ keys: ['острый угол'], answer: 'Острый угол меньше 90°. Например, 30°, 45°, 60°. 📐', subject: 'math' },
+{ keys: ['тупой угол'], answer: 'Тупой угол больше 90°, но меньше 180°. Например, 120°, 135°, 150°. 📐', subject: 'math' },
+{ keys: ['развёрнутый угол', 'развернутый угол'], answer: 'Развёрнутый угол равен 180°. Его стороны лежат на одной прямой и направлены в разные стороны. 📐', subject: 'math' },
+{ keys: ['сумма углов треугольника'], answer: 'Сумма углов любого треугольника всегда равна 180°. Это очень важное свойство! 📐', subject: 'math' },
+{ keys: ['теорема пифагора'], answer: 'Теорема Пифагора: в прямоугольном треугольнике квадрат гипотенузы равен сумме квадратов катетов. Формула: a² + b² = c². Пример: катеты 3 и 4 → гипотенуза = √(9+16) = √25 = 5. 📐', subject: 'math' },
+{ keys: ['скорость время расстояние'], answer: 'Формулы: расстояние = скорость × время (S = v · t). Скорость = расстояние : время (v = S : t). Время = расстояние : скорость (t = S : v). 🚗', subject: 'math' },
+{ keys: ['натуральные числа'], answer: 'Натуральные числа — это числа, которые мы используем при счёте: 1, 2, 3, 4, 5... Ноль и отрицательные числа НЕ натуральные. ✏️', subject: 'math' },
+{ keys: ['целые числа'], answer: 'Целые числа — это натуральные, противоположные им (отрицательные) и ноль: ..., −3, −2, −1, 0, 1, 2, 3... ✏️', subject: 'math' },
+{ keys: ['простое число', 'простые числа'], answer: 'Простое число делится только на 1 и само на себя. Примеры: 2, 3, 5, 7, 11, 13, 17, 19, 23. Число 1 — не простое! ✏️', subject: 'math' },
+{ keys: ['составное число'], answer: 'Составное число — то, у которого больше двух делителей. Примеры: 4 (делится на 1, 2, 4), 6 (1, 2, 3, 6), 8, 9, 10. ✏️', subject: 'math' },
+{ keys: ['нок', 'наименьшее общее кратное'], answer: 'НОК — наименьшее общее кратное. Это самое маленькое число, которое делится на оба заданных. Пример: НОК(4, 6) = 12. ✏️', subject: 'math' },
+{ keys: ['нод', 'наибольший общий делитель'], answer: 'НОД — наибольший общий делитель. Это самое большое число, на которое делятся оба заданных. Пример: НОД(12, 18) = 6. ✏️', subject: 'math' },
+{ keys: ['признак делимости на 2'], answer: 'На 2 делятся все чётные числа — те, что оканчиваются на 0, 2, 4, 6, 8. Пример: 124, 580, 1006. ✏️', subject: 'math' },
+{ keys: ['признак делимости на 3'], answer: 'На 3 делится число, если сумма его цифр делится на 3. Пример: 123 → 1+2+3=6, делится на 3. Значит и 123 делится. ✏️', subject: 'math' },
+{ keys: ['признак делимости на 5'], answer: 'На 5 делятся числа, оканчивающиеся на 0 или 5. Пример: 25, 100, 345, 1000. ✏️', subject: 'math' },
+{ keys: ['признак делимости на 9'], answer: 'На 9 делится число, если сумма его цифр делится на 9. Пример: 198 → 1+9+8=18, делится на 9. Значит и 198 делится. ✏️', subject: 'math' },
+{ keys: ['признак делимости на 10'], answer: 'На 10 делятся числа, оканчивающиеся на 0. Пример: 10, 50, 200, 1000. ✏️', subject: 'math' },
+{ keys: ['что такое модуль числа', 'модуль числа'], answer: 'Модуль числа — это его расстояние от нуля. Обозначается |x|. Модуль положительного — само число, модуль отрицательного — противоположное ему. |5|=5, |−7|=7. ✏️', subject: 'math' },
+{ keys: ['среднее арифметическое'], answer: 'Среднее арифметическое — сумма всех чисел, делённая на их количество. Пример: среднее для 4, 6, 8 = (4+6+8) : 3 = 18 : 3 = 6. ✏️', subject: 'math' },
+
+// ========== РУССКИЙ ЯЗЫК ==========
+{ keys: ['части речи', 'какие части речи', 'самостоятельные части речи'], answer: 'Самостоятельные части речи: существительное, прилагательное, глагол, местоимение, числительное, наречие. Служебные: предлог, союз, частица. Особая часть — междометие. ✏️', subject: 'rus' },
+{ keys: ['что такое существительное', 'имя существительное'], answer: 'Имя существительное — часть речи, которая обозначает предмет и отвечает на вопросы «кто?» или «что?». Примеры: мама, кот, дом, радость. ✏️', subject: 'rus' },
+{ keys: ['что такое прилагательное', 'имя прилагательное'], answer: 'Имя прилагательное — часть речи, обозначающая признак предмета. Отвечает на вопросы «какой?», «какая?», «какое?», «какие?». Примеры: красивый, большой, добрая. ✏️', subject: 'rus' },
+{ keys: ['что такое глагол', 'глагол это'], answer: 'Глагол — часть речи, которая обозначает действие или состояние. Отвечает на вопросы «что делать?» или «что сделать?». Примеры: бегать, читать, мечтать. ✏️', subject: 'rus' },
+{ keys: ['что такое местоимение'], answer: 'Местоимение — часть речи, которая указывает на предмет, признак или количество, но не называет их. Примеры: я, ты, он, она, мы, этот, который. ✏️', subject: 'rus' },
+{ keys: ['что такое наречие', 'наречие'], answer: 'Наречие — часть речи, обозначающая признак действия. Отвечает на вопросы «как?», «где?», «когда?», «куда?». Примеры: быстро, далеко, вчера, домой. ✏️', subject: 'rus' },
+{ keys: ['что такое числительное', 'имя числительное'], answer: 'Имя числительное — часть речи, обозначающая количество или порядок при счёте. Примеры: один, два, пять (количественные); первый, второй (порядковые). ✏️', subject: 'rus' },
+{ keys: ['что такое предлог', 'предлог'], answer: 'Предлог — служебная часть речи. Связывает слова в предложении. Примеры: в, на, под, из, к, от, с, у, до, около. ✏️', subject: 'rus' },
+{ keys: ['что такое союз', 'союз'], answer: 'Союз — служебная часть речи, которая соединяет однородные члены или части предложения. Примеры: и, а, но, или, что, чтобы, потому что. ✏️', subject: 'rus' },
+{ keys: ['что такое частица', 'частицы'], answer: 'Частица — служебная часть речи, которая придаёт оттенки значения. Примеры: не, ни, же, ли, бы, разве, неужели, даже. ✏️', subject: 'rus' },
+{ keys: ['что такое междометие'], answer: 'Междометие — особая часть речи, выражающая чувства и эмоции. Примеры: ах, ох, ура, увы, эй. ✏️', subject: 'rus' },
+{ keys: ['падежи', 'сколько падежей', 'падежи русского языка'], answer: 'В русском языке 6 падежей: 1) Именительный (кто? что?), 2) Родительный (кого? чего?), 3) Дательный (кому? чему?), 4) Винительный (кого? что?), 5) Творительный (кем? чем?), 6) Предложный (о ком? о чём?). Запоминалка: «Иван Родил Девчонку Велел Тащить Пелёнку». 📝', subject: 'rus' },
+{ keys: ['именительный падеж'], answer: 'Именительный падеж отвечает на вопросы «кто? что?». Это начальная форма слова. Пример: книга (что?), мама (кто?). ✏️', subject: 'rus' },
+{ keys: ['родительный падеж'], answer: 'Родительный падеж отвечает на вопросы «кого? чего?». Часто употребляется со словом «нет». Пример: нет книги, нет мамы. ✏️', subject: 'rus' },
+{ keys: ['дательный падеж'], answer: 'Дательный падеж отвечает на вопросы «кому? чему?». Со словом «дать». Пример: дать книге, дать маме. ✏️', subject: 'rus' },
+{ keys: ['винительный падеж'], answer: 'Винительный падеж отвечает на вопросы «кого? что?». Со словом «вижу». Пример: вижу книгу, вижу маму. ✏️', subject: 'rus' },
+{ keys: ['творительный падеж'], answer: 'Творительный падеж отвечает на вопросы «кем? чем?». Со словом «горжусь». Пример: горжусь книгой, горжусь мамой. ✏️', subject: 'rus' },
+{ keys: ['предложный падеж'], answer: 'Предложный падеж отвечает на вопросы «о ком? о чём?». Со словом «думаю». Пример: думаю о книге, думаю о маме. ✏️', subject: 'rus' },
+{ keys: ['склонения существительных', 'склонения'], answer: 'Существительные делятся на 3 склонения. 1-е склонение: ж.р. и м.р. на -а/-я (мама, дядя). 2-е: м.р. с нулевым окончанием и ср.р. на -о/-е (стол, окно). 3-е: ж.р. на ь (ночь, мышь). ✏️', subject: 'rus' },
+{ keys: ['спряжение глаголов', 'спряжения'], answer: 'У глаголов 2 спряжения. 2-е спряжение: глаголы на -ить (кроме брить, стелить) + 11 исключений (гнать, держать, смотреть, видеть, дышать, слышать, ненавидеть, обидеть, терпеть, зависеть, вертеть). Остальные — 1-е спряжение. ✏️', subject: 'rus' },
+{ keys: ['жи ши', 'правило жи ши'], answer: 'Правило: «жи» и «ши» пиши с буквой «И». Примеры: жизнь, машина, жираф, шишка, ширма. ✏️', subject: 'rus' },
+{ keys: ['ча ща', 'правило ча ща'], answer: 'Правило: «ча» и «ща» пиши с буквой «А». Примеры: чай, чашка, площадь, щавель. ✏️', subject: 'rus' },
+{ keys: ['чу щу', 'правило чу щу'], answer: 'Правило: «чу» и «щу» пиши с буквой «У». Примеры: чудо, чулок, щука, ищу. ✏️', subject: 'rus' },
+{ keys: ['чк чн'], answer: 'В сочетаниях «чк», «чн», «нч», «нщ», «рщ» мягкий знак НЕ пишется. Примеры: точка, ночной, банщик. ✏️', subject: 'rus' },
+{ keys: ['безударная гласная в корне', 'безударная гласная'], answer: 'Чтобы проверить безударную гласную в корне — подбери однокоренное слово, где эта гласная под ударением. Пример: вода → вОды, лесной → лЕс. ✏️', subject: 'rus' },
+{ keys: ['парная согласная'], answer: 'Чтобы проверить парную согласную (б-п, в-ф, г-к, д-т, ж-ш, з-с) — измени слово или подбери однокоренное так, чтобы после согласной стояла гласная. Пример: дуб → дубЫ, сказка → сказАть. ✏️', subject: 'rus' },
+{ keys: ['непроизносимая согласная'], answer: 'Чтобы проверить непроизносимую согласную (т, д, в, л) — подбери однокоренное слово, где эта буква отчётливо слышна. Пример: грустный → грусТь, солнце → солнЫшко. ✏️', subject: 'rus' },
+{ keys: ['разделительный мягкий знак'], answer: 'Разделительный мягкий знак (ь) пишется в корне или после корня перед буквами е, ё, ю, я, и. Примеры: вьюга, листья, соловьи, обезьяна. ✏️', subject: 'rus' },
+{ keys: ['разделительный твёрдый знак', 'разделительный твердый знак'], answer: 'Разделительный твёрдый знак (ъ) пишется после приставок на согласную перед буквами е, ё, ю, я. Примеры: подъезд, объявление, съёмка, въезд. ✏️', subject: 'rus' },
+{ keys: ['приставки на з с'], answer: 'В приставках на «з/с» (без-/бес-, раз-/рас-, из-/ис-): перед звонкой согласной пишем З, перед глухой — С. Примеры: безоблачный, бесшумный, разбить, расписать. ✏️', subject: 'rus' },
+{ keys: ['приставка пре при', 'пре при'], answer: 'Приставка ПРЕ- = очень, пере- (премудрый, преградить). Приставка ПРИ- = приближение, присоединение, неполное действие, близость (приехать, пришить, приоткрыть, пришкольный). ✏️', subject: 'rus' },
+{ keys: ['не с глаголами'], answer: 'НЕ с глаголами пишется РАЗДЕЛЬНО. Примеры: не хочу, не знаю, не пришёл. Исключения: глаголы, которые без НЕ не употребляются — ненавидеть, негодовать, недоумевать. ✏️', subject: 'rus' },
+{ keys: ['тся ться', 'правило тся ться'], answer: 'Чтобы проверить -тся или -ться, задай вопрос: «что делать?» / «что сделать?» (с Ь) → -ться (учиться). «Что делает?» / «Что сделает?» (без Ь) → -тся (учится). ✏️', subject: 'rus' },
+{ keys: ['что такое подлежащее', 'подлежащее'], answer: 'Подлежащее — главный член предложения. Отвечает на вопрос «кто?» или «что?». Подчёркивается одной чертой. Пример: «Кот спит» — подлежащее «кот». ✏️', subject: 'rus' },
+{ keys: ['что такое сказуемое', 'сказуемое'], answer: 'Сказуемое — главный член предложения. Отвечает на вопросы «что делает?», «каков?». Подчёркивается двумя чертами. Пример: «Кот спит» — сказуемое «спит». ✏️', subject: 'rus' },
+{ keys: ['определение член предложения'], answer: 'Определение — второстепенный член предложения. Отвечает на вопросы «какой?», «чей?». Подчёркивается волнистой линией. Пример: «Красивая бабочка» — определение «красивая». ✏️', subject: 'rus' },
+{ keys: ['дополнение член предложения'], answer: 'Дополнение — второстепенный член. Отвечает на вопросы косвенных падежей (кого? чего? кому? чем?). Подчёркивается пунктиром. Пример: «Читаю книгу» — дополнение «книгу». ✏️', subject: 'rus' },
+{ keys: ['обстоятельство член предложения'], answer: 'Обстоятельство — второстепенный член. Отвечает на вопросы «как?», «где?», «когда?», «куда?», «откуда?», «зачем?». Подчёркивается точка-тире. Пример: «Гуляю в парке» — «в парке». ✏️', subject: 'rus' },
+{ keys: ['однородные члены предложения'], answer: 'Однородные члены отвечают на один и тот же вопрос и относятся к одному слову. Между ними ставится запятая (или союз). Пример: «Красные, жёлтые, синие шары». ✏️', subject: 'rus' },
+{ keys: ['алфавит', 'сколько букв в алфавите'], answer: 'В русском алфавите 33 буквы: 10 гласных (а, е, ё, и, о, у, ы, э, ю, я), 21 согласная и 2 знака — твёрдый (ъ) и мягкий (ь). 📚', subject: 'rus' },
+{ keys: ['гласные звуки'], answer: 'Гласных звуков 6: [а], [о], [у], [ы], [и], [э]. А гласных букв 10: а, е, ё, и, о, у, ы, э, ю, я. Буквы е, ё, ю, я могут обозначать 2 звука! ✏️', subject: 'rus' },
+{ keys: ['согласные звуки'], answer: 'Согласные звуки бывают звонкими и глухими, твёрдыми и мягкими. Парные звонкие/глухие: б-п, в-ф, г-к, д-т, ж-ш, з-с. Всегда звонкие: л, м, н, р, й. Всегда глухие: х, ц, ч, щ. ✏️', subject: 'rus' },
+{ keys: ['синонимы что такое', 'синонимы'], answer: 'Синонимы — слова с близким значением, но разные по написанию. Пример: радость — веселье — счастье. Большой — крупный — огромный. ✏️', subject: 'rus' },
+{ keys: ['антонимы что такое', 'антонимы'], answer: 'Антонимы — слова с противоположным значением. Пример: добрый — злой, день — ночь, большой — маленький. ✏️', subject: 'rus' },
+{ keys: ['омонимы что такое', 'омонимы'], answer: 'Омонимы — слова, которые пишутся и звучат одинаково, но имеют разное значение. Пример: ключ (от двери и в роднике), коса (девичья и сельскохозяйственная). ✏️', subject: 'rus' },
+{ keys: ['фразеологизм', 'что такое фразеологизм'], answer: 'Фразеологизм — устойчивое выражение, смысл которого нельзя понять буквально. Примеры: «бить баклуши» (бездельничать), «спустя рукава» (плохо работать), «зарубить на носу» (запомнить). ✏️', subject: 'rus' },
+{ keys: ['корень слова'], answer: 'Корень — главная часть слова, в нём заключено основное значение. Однокоренные слова имеют общий корень. Пример: лес, лесной, лесник, лесок — корень «лес». ✏️', subject: 'rus' },
+{ keys: ['приставка'], answer: 'Приставка — часть слова, которая стоит перед корнем и образует новые слова. Пример: ходить → приходить, уходить, заходить. ✏️', subject: 'rus' },
+{ keys: ['суффикс'], answer: 'Суффикс — часть слова, которая стоит после корня и образует новые слова. Пример: дом → домик (суффикс -ик), кот → котёнок (суффикс -ёнок). ✏️', subject: 'rus' },
+{ keys: ['окончание'], answer: 'Окончание — изменяемая часть слова, которая стоит в самом конце. Служит для связи слов в предложении. Пример: книга, книгу, книгой — окончания -а, -у, -ой. ✏️', subject: 'rus' },
+{ keys: ['основа слова'], answer: 'Основа слова — это всё слово без окончания. Включает приставку, корень, суффикс. Пример: в слове «домики» основа — «домик», окончание — «и». ✏️', subject: 'rus' },
+
+// ========== ЛИТЕРАТУРА ==========
+{ keys: ['что такое басня', 'басня'], answer: 'Басня — короткий рассказ в стихах или прозе с моралью. Главные герои часто животные, которые ведут себя как люди. Знаменитые баснописцы: Эзоп, Лафонтен, Иван Крылов. 📖', subject: 'lit' },
+{ keys: ['что такое мораль басни', 'мораль'], answer: 'Мораль — поучительный вывод, главная мысль басни. Обычно стоит в начале или в конце басни. Это то, чему басня учит читателя. 📖', subject: 'lit' },
+{ keys: ['что такое сказка', 'сказка'], answer: 'Сказка — занимательный рассказ о вымышленных событиях. Бывают народные (без автора) и литературные (есть автор). Сказки делят на волшебные, бытовые и о животных. 📖', subject: 'lit' },
+{ keys: ['что такое былина', 'былина'], answer: 'Былина — русская народная эпическая песня о подвигах богатырей. Главные герои: Илья Муромец, Добрыня Никитич, Алёша Попович. 📖', subject: 'lit' },
+{ keys: ['что такое рассказ', 'рассказ'], answer: 'Рассказ — небольшое прозаическое произведение об одном-двух событиях из жизни героев. Например: «Муму» Тургенева, «Кавказский пленник» Толстого. 📖', subject: 'lit' },
+{ keys: ['что такое повесть', 'повесть'], answer: 'Повесть — прозаическое произведение средней длины, между рассказом и романом. В ней больше героев и событий, чем в рассказе. 📖', subject: 'lit' },
+{ keys: ['что такое роман'], answer: 'Роман — большое прозаическое произведение со сложным сюжетом, многими героями и событиями, охватывающими долгое время. 📖', subject: 'lit' },
+{ keys: ['что такое стихотворение'], answer: 'Стихотворение — небольшое произведение, написанное в стихах (с ритмом и часто с рифмой). Передаёт чувства и мысли автора. 📖', subject: 'lit' },
+{ keys: ['что такое поэма'], answer: 'Поэма — большое стихотворное произведение с сюжетом. Например, «Руслан и Людмила» Пушкина. 📖', subject: 'lit' },
+{ keys: ['что такое баллада'], answer: 'Баллада — стихотворение с напряжённым, часто мрачным или загадочным сюжетом. Пример: «Светлана» Жуковского. 📖', subject: 'lit' },
+{ keys: ['что такое эпитет', 'эпитет'], answer: 'Эпитет — образное определение, которое подчёркивает признак предмета. Примеры: «золотая осень», «серебряная роса», «грустный взгляд». ✏️', subject: 'lit' },
+{ keys: ['что такое метафора', 'метафора'], answer: 'Метафора — скрытое сравнение, перенос значения по сходству. Пример: «золото волос» (волосы золотистого цвета), «море огней» (много огней). ✏️', subject: 'lit' },
+{ keys: ['что такое сравнение', 'сравнение в литературе'], answer: 'Сравнение — выразительное средство, в котором один предмет сравнивается с другим. Часто со словами «как», «словно», «будто». Пример: «глаза, как звёзды». ✏️', subject: 'lit' },
+{ keys: ['что такое олицетворение', 'олицетворение'], answer: 'Олицетворение — наделение неживых предметов признаками живых. Примеры: «солнышко улыбается», «ветер шепчет», «деревья танцуют». ✏️', subject: 'lit' },
+{ keys: ['что такое гипербола', 'гипербола'], answer: 'Гипербола — художественное преувеличение. Пример: «море слёз», «сто раз говорил», «реки крови». ✏️', subject: 'lit' },
+{ keys: ['что такое рифма', 'рифма'], answer: 'Рифма — созвучие в окончании двух или нескольких строк. Пример: «лес — небес», «пора — гора». 📖', subject: 'lit' },
+{ keys: ['что такое ритм'], answer: 'Ритм — равномерное чередование ударных и безударных слогов в стихотворении. Создаёт музыкальность стиха. 📖', subject: 'lit' },
+{ keys: ['пушкин годы жизни', 'когда жил пушкин'], answer: 'Александр Сергеевич Пушкин жил в 1799–1837 годах. Великий русский поэт, писатель, основоположник современного русского литературного языка. 📖', subject: 'lit' },
+{ keys: ['лермонтов годы жизни'], answer: 'Михаил Юрьевич Лермонтов жил в 1814–1841 годах. Русский поэт и прозаик. Известные произведения: «Бородино», «Мцыри», «Герой нашего времени». 📖', subject: 'lit' },
+{ keys: ['толстой годы жизни', 'лев толстой'], answer: 'Лев Николаевич Толстой жил в 1828–1910 годах. Великий русский писатель. Известные произведения: «Война и мир», «Анна Каренина», «Кавказский пленник». 📖', subject: 'lit' },
+{ keys: ['тургенев'], answer: 'Иван Сергеевич Тургенев (1818–1883) — русский писатель. Известное произведение из 5 класса: «Муму» — рассказ о глухонемом дворнике Герасиме и его собачке. 📖', subject: 'lit' },
+{ keys: ['некрасов'], answer: 'Николай Алексеевич Некрасов (1821–1878) — русский поэт. Писал о тяжёлой жизни крестьян. Известные стихи: «Крестьянские дети», «На Волге». 📖', subject: 'lit' },
+{ keys: ['крылов'], answer: 'Иван Андреевич Крылов (1769–1844) — великий русский баснописец. Знаменитые басни: «Ворона и Лисица», «Мартышка и очки», «Стрекоза и Муравей», «Свинья под Дубом». 📖', subject: 'lit' },
+{ keys: ['ворона и лисица'], answer: '«Ворона и Лисица» — басня Крылова. Лиса хитростью выманила сыр у вороны, льстя ей. Мораль: «Уж сколько раз твердили миру, что лесть гнусна, вредна; но только всё не впрок». 📖', subject: 'lit' },
+{ keys: ['муму'], answer: '«Муму» — рассказ Ивана Тургенева о глухонемом крепостном Герасиме, который был привязан к своей собачке Муму. По приказу барыни ему пришлось её утопить. Произведение о бесправии крестьян. 📖', subject: 'lit' },
+{ keys: ['кавказский пленник'], answer: '«Кавказский пленник» — рассказ Льва Толстого. Двое русских офицеров, Жилин и Костылин, попали в плен к горцам. Жилин сумел сбежать благодаря своей храбрости и смекалке, а Костылин — нет. 📖', subject: 'lit' },
+{ keys: ['руслан и людмила'], answer: '«Руслан и Людмила» — поэма Пушкина. История о князе Руслане, который ищет похищенную злым колдуном Черномором невесту Людмилу. Полна волшебства и приключений. 📖', subject: 'lit' },
+{ keys: ['сказка о мёртвой царевне', 'мертвая царевна'], answer: '«Сказка о мёртвой царевне и о семи богатырях» — сказка Пушкина. Злая мачеха завидует красоте царевны и приказывает её погубить. Богатыри спасают царевну, а королевич Елисей возвращает её к жизни. 📖', subject: 'lit' },
+{ keys: ['бородино'], answer: '«Бородино» — стихотворение Лермонтова о Бородинском сражении 1812 года между русской армией и войсками Наполеона. Старый солдат рассказывает молодому о подвиге русских воинов. 📖', subject: 'lit' },
+
+// ========== ENGLISH ==========
+{ keys: ['как сказать привет по английски', 'привет по английски'], answer: '«Привет» по-английски — Hello! [хеллоу]. Ещё можно сказать Hi! [хай] — это менее формально. 🇬🇧', subject: 'eng' },
+{ keys: ['как сказать пока по английски', 'пока по английски'], answer: '«Пока» по-английски — Goodbye! [гудбай] или Bye! [бай]. До скорой встречи — See you later! [си ю лэйтэр]. 🇬🇧', subject: 'eng' },
+{ keys: ['как тебя зовут по английски'], answer: '«Как тебя зовут?» — What is your name? [уот из ёр нэйм?]. Ответ: My name is Ruslan [май нэйм из Руслан] — Меня зовут Руслан. 🇬🇧', subject: 'eng' },
+{ keys: ['как дела по английски'], answer: '«Как дела?» — How are you? [хау а ю?]. Ответ: I am fine, thank you! [ай эм файн, сэнк ю] — У меня всё хорошо, спасибо! 🇬🇧', subject: 'eng' },
+{ keys: ['спасибо по английски'], answer: '«Спасибо» — Thank you! [сэнк ю] или просто Thanks! [сэнкс]. Ответ: You are welcome! [ю а уэлкам] — Пожалуйста! 🇬🇧', subject: 'eng' },
+{ keys: ['да и нет по английски'], answer: '«Да» по-английски — Yes [йес]. «Нет» — No [ноу]. 🇬🇧', subject: 'eng' },
+{ keys: ['глагол to be', 'to be'], answer: 'Глагол to be (быть) меняет форму: I am (я есть), you are (ты), he/she/it is (он/она/оно), we/you/they are (мы/вы/они). Пример: I am a student. He is happy. We are friends. 🇬🇧', subject: 'eng' },
+{ keys: ['present simple'], answer: 'Present Simple — простое настоящее время. Используется для регулярных действий. Формула: I/you/we/they + глагол. He/she/it + глагол + s/es. Пример: I play football. She plays football. 🇬🇧', subject: 'eng' },
+{ keys: ['present continuous'], answer: 'Present Continuous — настоящее длительное. Действие происходит сейчас. Формула: am/is/are + V-ing. Пример: I am reading. She is dancing. They are playing. 🇬🇧', subject: 'eng' },
+{ keys: ['past simple'], answer: 'Past Simple — простое прошедшее. Действие произошло в прошлом. Правильные глаголы + ed: played, worked. Неправильные: go-went, see-saw, eat-ate. Пример: Yesterday I played football. 🇬🇧', subject: 'eng' },
+{ keys: ['future simple'], answer: 'Future Simple — простое будущее. Действие будет в будущем. Формула: will + глагол. Пример: I will go to school tomorrow. She will help us. 🇬🇧', subject: 'eng' },
+{ keys: ['артикли the a an', 'артикли английского'], answer: 'Артикли в английском: a/an — неопределённый (a book, an apple — перед гласной an). The — определённый, когда речь о конкретном предмете. Пример: I see a cat. The cat is black. 🇬🇧', subject: 'eng' },
+{ keys: ['числа на английском', 'цифры по английски'], answer: 'Числа: 1-one, 2-two, 3-three, 4-four, 5-five, 6-six, 7-seven, 8-eight, 9-nine, 10-ten, 11-eleven, 12-twelve, 13-thirteen, 20-twenty, 30-thirty, 100-one hundred. 🇬🇧', subject: 'eng' },
+{ keys: ['цвета по английски'], answer: 'Цвета: red (красный), blue (синий), green (зелёный), yellow (жёлтый), white (белый), black (чёрный), orange (оранжевый), pink (розовый), purple (фиолетовый), brown (коричневый). 🇬🇧', subject: 'eng' },
+{ keys: ['дни недели по английски'], answer: 'Дни недели: Monday (понедельник), Tuesday (вторник), Wednesday (среда), Thursday (четверг), Friday (пятница), Saturday (суббота), Sunday (воскресенье). 🇬🇧', subject: 'eng' },
+{ keys: ['месяцы по английски'], answer: 'Месяцы: January, February, March, April, May, June, July, August, September, October, November, December. Все пишутся с большой буквы! 🇬🇧', subject: 'eng' },
+{ keys: ['семья по английски', 'family'], answer: 'Family (семья): mother/mom (мама), father/dad (папа), brother (брат), sister (сестра), grandmother/grandma (бабушка), grandfather/grandpa (дедушка), son (сын), daughter (дочь). 🇬🇧', subject: 'eng' },
+{ keys: ['множественное число английский'], answer: 'Множественное число в английском: обычно + s (cat → cats). После s, x, ch, sh, o + es (bus → buses, box → boxes). После согласной + y → ies (city → cities). Особые: man → men, child → children, foot → feet, mouse → mice. 🇬🇧', subject: 'eng' },
+{ keys: ['алфавит английский', 'английский алфавит'], answer: 'В английском алфавите 26 букв: A B C D E F G H I J K L M N O P Q R S T U V W X Y Z. Гласных всего 5: A, E, I, O, U (иногда Y). 🇬🇧', subject: 'eng' },
+{ keys: ['местоимения английские'], answer: 'Личные местоимения: I (я), you (ты/вы), he (он), she (она), it (оно), we (мы), they (они). Притяжательные: my, your, his, her, its, our, their. 🇬🇧', subject: 'eng' },
+
+// ========== ИСТОРИЯ ==========
+{ keys: ['древний египет', 'египет древний'], answer: 'Древний Египет — одна из старейших цивилизаций, возникла около 3000 лет до н.э. на берегах Нила. Знаменит фараонами, пирамидами и иероглифами. Самая большая пирамида — Хеопса. 🏛️', subject: 'hist' },
+{ keys: ['кто такие фараоны', 'фараон'], answer: 'Фараон — правитель Древнего Египта. Считался богом на земле. Самые известные: Тутанхамон, Рамсес II, Хеопс. После смерти фараонов хоронили в пирамидах. 🏛️', subject: 'hist' },
+{ keys: ['пирамиды египта', 'для чего пирамиды'], answer: 'Пирамиды — гробницы фараонов в Древнем Египте. Самая большая — пирамида Хеопса в Гизе, высотой почти 147 м, построена около 2500 г. до н.э. До сих пор учёные спорят, как её построили без современной техники! 🏛️', subject: 'hist' },
+{ keys: ['иероглифы'], answer: 'Иероглифы — древнеегипетское письмо, где каждый знак — рисунок. Расшифровать их смог французский учёный Шампольон в 1822 году с помощью Розеттского камня. 🏛️', subject: 'hist' },
+{ keys: ['нил река древний египет'], answer: 'Нил — главная река Древнего Египта, дала жизнь всей цивилизации. Каждый год она разливалась и оставляла плодородный ил, на котором египтяне выращивали урожай. Без Нила Египет был бы пустыней. 🌍', subject: 'hist' },
+{ keys: ['древняя греция', 'греция древняя'], answer: 'Древняя Греция — цивилизация, возникшая около 3000 лет до н.э. Известна философами (Сократ, Платон, Аристотель), Олимпийскими играми, мифами о богах Олимпа, демократией в Афинах. 🏛️', subject: 'hist' },
+{ keys: ['олимпийские игры древние'], answer: 'Олимпийские игры зародились в Древней Греции в 776 году до н.э. в городе Олимпия в честь бога Зевса. Проводились раз в 4 года. Во время игр прекращались все войны! 🏛️', subject: 'hist' },
+{ keys: ['боги греции', 'олимпийские боги'], answer: 'Главные боги Древней Греции: Зевс (царь богов, гром), Гера (его жена), Посейдон (море), Аид (подземный мир), Аполлон (солнце, искусство), Афина (мудрость), Афродита (любовь), Арес (война), Артемида (охота), Гермес (вестник). 🏛️', subject: 'hist' },
+{ keys: ['спарта'], answer: 'Спарта — древнегреческое государство, известное суровым воинским воспитанием. Спартанские мальчики с 7 лет тренировались как воины. «Со щитом или на щите» — говорили матери, провожая сыновей в бой. 🏛️', subject: 'hist' },
+{ keys: ['афины древние'], answer: 'Афины — главный город Древней Греции, центр культуры, философии и демократии. Здесь жили Сократ, Платон, Аристотель. Главный храм — Парфенон на холме Акрополь. 🏛️', subject: 'hist' },
+{ keys: ['александр македонский'], answer: 'Александр Македонский (356–323 до н.э.) — великий полководец Древней Македонии. К 30 годам завоевал огромную империю от Греции до Индии. Учитель — философ Аристотель. 🏛️', subject: 'hist' },
+{ keys: ['древний рим', 'рим древний'], answer: 'Древний Рим — цивилизация, возникшая в 753 г. до н.э. в Италии. Сначала царство, потом республика, потом империя. Завоевал почти всё Средиземноморье. Известные римляне: Юлий Цезарь, Октавиан Август, Цицерон. 🏛️', subject: 'hist' },
+{ keys: ['юлий цезарь'], answer: 'Гай Юлий Цезарь (100–44 до н.э.) — древнеримский полководец и политик. Завоевал Галлию, ввёл календарь, в его честь назван месяц Июль. Был убит в Сенате заговорщиками. Знаменитая фраза: «И ты, Брут?». 🏛️', subject: 'hist' },
+{ keys: ['гладиаторы'], answer: 'Гладиаторы — рабы или военнопленные в Древнем Риме, которые сражались на арене для развлечения публики. Самый знаменитый гладиатор — Спартак, поднявший восстание против рабства в 73 г. до н.э. 🏛️', subject: 'hist' },
+{ keys: ['колизей'], answer: 'Колизей — огромный амфитеатр в Риме, построен в 70–80 гг. н.э. Вмещал до 50 000 зрителей. Здесь проходили бои гладиаторов и других зрелища. До сих пор сохранился частично, является символом Рима. 🏛️', subject: 'hist' },
+{ keys: ['что такое до нашей эры', 'до нашей эры'], answer: 'До нашей эры (до н.э.) — годы до рождения Иисуса Христа, отсчёт идёт в обратную сторону. Например, 100 г. до н.э. был раньше, чем 50 г. до н.э. После — наша эра (н.э.) — обычный отсчёт лет: 100, 500, 2026. 🏛️', subject: 'hist' },
+{ keys: ['первобытные люди'], answer: 'Первобытные люди появились около 2 млн лет назад. Жили в пещерах, охотились на животных, собирали ягоды и коренья. Открыли огонь, изобрели орудия из камня. Постепенно научились земледелию и скотоводству. 🏛️', subject: 'hist' },
+{ keys: ['каменный век'], answer: 'Каменный век — самый длинный период в истории человечества. Орудия делали из камня, дерева, кости. Делится на палеолит (древнекаменный), мезолит (среднекаменный) и неолит (новокаменный). 🏛️', subject: 'hist' },
+{ keys: ['бронзовый век'], answer: 'Бронзовый век (около 3500–1200 до н.э.) — эпоха, когда люди научились выплавлять бронзу (сплав меди и олова). Бронзовые орудия и оружие были прочнее каменных. 🏛️', subject: 'hist' },
+{ keys: ['железный век'], answer: 'Железный век начался около 1200 г. до н.э. Люди научились плавить железо — более прочный металл, чем бронза. Это позволило делать лучшее оружие и орудия труда. 🏛️', subject: 'hist' },
+{ keys: ['что такое цивилизация'], answer: 'Цивилизация — высокий уровень развития общества с городами, письменностью, государством и культурой. Первые цивилизации возникли в Египте, Месопотамии, Индии, Китае. 🏛️', subject: 'hist' },
+
+// ========== ГЕОГРАФИЯ ==========
+{ keys: ['сколько океанов', 'сколько океанов на земле', 'океаны на земле'], answer: 'На Земле 4 океана (по старой классификации) или 5 (по новой, с Южным): 1) Тихий — самый большой, 2) Атлантический, 3) Индийский, 4) Северный Ледовитый — самый маленький, 5) Южный (вокруг Антарктиды, выделили в 2000 году). 🌊', subject: 'geo' },
+{ keys: ['сколько материков', 'материки земли', 'материков на земле'], answer: 'На Земле 6 материков: 1) Евразия — самый большой, 2) Африка, 3) Северная Америка, 4) Южная Америка, 5) Австралия — самый маленький, 6) Антарктида — самый холодный. 🌍', subject: 'geo' },
+{ keys: ['самый большой океан'], answer: 'Самый большой океан — Тихий. Он занимает около трети поверхности Земли! Его площадь — почти 180 миллионов км². 🌊', subject: 'geo' },
+{ keys: ['самый маленький океан'], answer: 'Самый маленький океан — Северный Ледовитый. Большая его часть покрыта льдом круглый год. ❄️', subject: 'geo' },
+{ keys: ['самый большой материк'], answer: 'Самый большой материк — Евразия. На нём расположены два континента — Европа и Азия. Здесь живёт большая часть населения Земли. 🌍', subject: 'geo' },
+{ keys: ['самый маленький материк'], answer: 'Самый маленький материк — Австралия. Это единственный материк-государство. Известна кенгуру, коалами и Большим Барьерным рифом. 🦘', subject: 'geo' },
+{ keys: ['самая высокая гора', 'эверест'], answer: 'Самая высокая гора в мире — Эверест (Джомолунгма) в Гималаях. Её высота — 8848 метров над уровнем моря. Находится на границе Непала и Китая. ⛰️', subject: 'geo' },
+{ keys: ['самая длинная река'], answer: 'Самая длинная река в мире — Нил в Африке (около 6650 км). По другим данным — Амазонка в Южной Америке (около 6400 км). Обе огромны! 🌊', subject: 'geo' },
+{ keys: ['самая большая река россии', 'самая длинная река россии'], answer: 'Самая длинная река России — Лена (4400 км). Самая полноводная — Енисей. Самая известная — Волга, главная река Европейской России. 🌊', subject: 'geo' },
+{ keys: ['самое глубокое озеро', 'байкал'], answer: 'Самое глубокое озеро в мире — Байкал в России. Его глубина — 1642 метра! Здесь содержится 20% всей пресной воды на Земле. 🌊', subject: 'geo' },
+{ keys: ['самая большая пустыня', 'сахара'], answer: 'Самая большая жаркая пустыня — Сахара в Африке (около 9 млн км²). А самая большая пустыня вообще — Антарктида (это ледяная пустыня). 🏜️', subject: 'geo' },
+{ keys: ['самое большое море'], answer: 'Самое большое море — Филиппинское в Тихом океане (около 5,7 млн км²). Из России самое известное — Чёрное и Каспийское (которое вообще-то озеро!). 🌊', subject: 'geo' },
+{ keys: ['что такое экватор'], answer: 'Экватор — воображаемая линия, которая делит Землю на Северное и Южное полушария. Длина экватора — около 40 000 км. На экваторе всегда жарко. 🌍', subject: 'geo' },
+{ keys: ['северный полюс'], answer: 'Северный полюс — самая северная точка Земли. Находится в Северном Ледовитом океане. Там нет суши, только лёд. Здесь полярная ночь зимой и полярный день летом. ❄️', subject: 'geo' },
+{ keys: ['южный полюс'], answer: 'Южный полюс — самая южная точка Земли. Находится в Антарктиде. Это самое холодное место на планете, температура опускается до −89°C! ❄️', subject: 'geo' },
+{ keys: ['строение земли', 'из чего состоит земля'], answer: 'Земля состоит из 3 слоёв: 1) ядро (внутреннее твёрдое и внешнее жидкое, очень горячее, температура до 6000°C), 2) мантия (вязкая, толщиной около 2900 км), 3) земная кора (тонкий внешний слой, на котором мы живём). 🌍', subject: 'geo' },
+{ keys: ['земная кора'], answer: 'Земная кора — самый верхний твёрдый слой Земли, на котором мы живём. Под океанами она тоньше (5–10 км), под материками толще (30–80 км). Состоит из горных пород. 🌍', subject: 'geo' },
+{ keys: ['мантия земли'], answer: 'Мантия — слой Земли между корой и ядром. Толщина около 2900 км. Состоит из горячих горных пород, которые медленно движутся. Из мантии при извержении вулкана выходит магма. 🌋', subject: 'geo' },
+{ keys: ['ядро земли'], answer: 'Ядро — самый центр Земли. Состоит в основном из железа и никеля. Внешнее ядро жидкое, внутреннее — твёрдое. Температура — около 6000°C, как на поверхности Солнца! 🌍', subject: 'geo' },
+{ keys: ['что такое атмосфера', 'атмосфера земли'], answer: 'Атмосфера — воздушная оболочка Земли. Защищает от космической радиации и метеоритов. В ней есть кислород, которым мы дышим. Слои: тропосфера, стратосфера, мезосфера, термосфера, экзосфера. 🌬️', subject: 'geo' },
+{ keys: ['что такое гидросфера'], answer: 'Гидросфера — водная оболочка Земли. Включает все океаны, моря, реки, озёра, ледники, подземные воды. 71% поверхности Земли покрыто водой. 🌊', subject: 'geo' },
+{ keys: ['что такое литосфера'], answer: 'Литосфера — твёрдая оболочка Земли. Включает земную кору и верхнюю часть мантии. Состоит из тектонических плит, которые медленно движутся. 🌍', subject: 'geo' },
+{ keys: ['что такое биосфера'], answer: 'Биосфера — живая оболочка Земли. Это всё, где есть жизнь: на суше, в воде, в воздухе. Простирается от глубин океана до верхних слоёв атмосферы. 🌱', subject: 'geo' },
+{ keys: ['что такое погода'], answer: 'Погода — состояние атмосферы в данный момент в данном месте. Включает температуру, осадки, ветер, облачность, влажность. Погода меняется каждый день. 🌤️', subject: 'geo' },
+{ keys: ['что такое климат'], answer: 'Климат — многолетний режим погоды в определённом месте. В отличие от погоды, климат меняется очень медленно. Бывает арктический, умеренный, тропический, экваториальный. 🌍', subject: 'geo' },
+{ keys: ['природные зоны россии'], answer: 'Природные зоны России (с севера на юг): арктические пустыни, тундра, лесотундра, тайга, смешанные леса, лесостепь, степь, полупустыни и пустыни, субтропики (узкая полоска на Черноморском побережье). 🌲', subject: 'geo' },
+{ keys: ['что такое тундра'], answer: 'Тундра — природная зона на севере с очень холодным климатом. Деревьев нет, только мхи, лишайники, карликовые ивы и берёзы. Живут северные олени, песцы, лемминги. ❄️', subject: 'geo' },
+{ keys: ['что такое тайга'], answer: 'Тайга — самая большая лесная зона России. Растут хвойные деревья: сосна, ель, кедр, пихта, лиственница. Живут медведи, волки, лоси, рыси, белки. 🌲', subject: 'geo' },
+{ keys: ['что такое степь'], answer: 'Степь — равнина, покрытая травами. Деревьев почти нет. Климат тёплый, лето засушливое. Живут суслики, сурки, лисицы, степные орлы. 🌾', subject: 'geo' },
+{ keys: ['самая большая страна'], answer: 'Самая большая страна в мире — Россия. Её площадь — более 17 миллионов км². Она в 2 раза больше следующей по размеру страны (Канады). 🌍', subject: 'geo' },
+{ keys: ['самая населённая страна', 'самая населенная страна'], answer: 'Самая населённая страна в мире — Индия (более 1,4 миллиарда человек). На втором месте — Китай. 🌍', subject: 'geo' },
+{ keys: ['столица россии'], answer: 'Столица России — Москва. Это один из крупнейших городов мира с населением более 13 миллионов человек. Главная достопримечательность — Кремль и Красная площадь. 🇷🇺', subject: 'geo' },
+{ keys: ['столица франции'], answer: 'Столица Франции — Париж. Знаменит Эйфелевой башней, Лувром, Нотр-Дамом. 🇫🇷', subject: 'geo' },
+{ keys: ['столица англии', 'столица великобритании'], answer: 'Столица Великобритании (Англии) — Лондон. Знаменит Биг-Беном, Букингемским дворцом, Лондонским мостом. 🇬🇧', subject: 'geo' },
+{ keys: ['столица сша'], answer: 'Столица США — Вашингтон. Не путай с Нью-Йорком — это самый большой город США, но не столица! 🇺🇸', subject: 'geo' },
+{ keys: ['столица японии'], answer: 'Столица Японии — Токио. Это один из самых населённых городов мира. Япония — страна восходящего солнца. 🇯🇵', subject: 'geo' },
+{ keys: ['столица китая'], answer: 'Столица Китая — Пекин. В нём находится знаменитый Запретный город — императорский дворец. 🇨🇳', subject: 'geo' },
+{ keys: ['столица германии'], answer: 'Столица Германии — Берлин. Знаменит Бранденбургскими воротами и Берлинской стеной (которая теперь разрушена). 🇩🇪', subject: 'geo' },
+{ keys: ['столица италии'], answer: 'Столица Италии — Рим. Один из самых древних городов Европы, был столицей Римской империи. Знаменит Колизеем и Ватиканом. 🇮🇹', subject: 'geo' },
+{ keys: ['что такое горизонт'], answer: 'Горизонт — линия, где небо как бы соприкасается с землёй. Это граница видимой части земной поверхности. Бывает 4 основные стороны горизонта: север, юг, восток, запад. 🧭', subject: 'geo' },
+{ keys: ['стороны горизонта', 'стороны света'], answer: 'Стороны горизонта (стороны света): север (С/N), юг (Ю/S), восток (В/E), запад (З/W). Между ними — северо-восток, северо-запад, юго-восток, юго-запад. 🧭', subject: 'geo' },
+{ keys: ['что такое компас'], answer: 'Компас — прибор для определения сторон света. Его магнитная стрелка всегда показывает на север. Используется путешественниками, моряками, туристами. 🧭', subject: 'geo' },
+{ keys: ['что такое карта'], answer: 'Карта — уменьшенное изображение земной поверхности на плоскости. Бывают физические (показывают рельеф), политические (страны), климатические и другие. 🗺️', subject: 'geo' },
+{ keys: ['что такое масштаб'], answer: 'Масштаб карты показывает, во сколько раз уменьшено изображение. Например, масштаб 1:100 000 значит, что 1 см на карте = 100 000 см = 1 км в реальности. 🗺️', subject: 'geo' },
+
+// ========== БИОЛОГИЯ ==========
+{ keys: ['что такое биология'], answer: 'Биология — наука о живой природе. Изучает растения, животных, грибы, бактерии, вирусы и человека. Слово «биос» по-гречески значит «жизнь». 🌱', subject: 'bio' },
+{ keys: ['царства живой природы'], answer: 'Существует 5 царств живой природы: 1) Бактерии, 2) Грибы, 3) Растения, 4) Животные, 5) Вирусы (некоторые учёные не относят их к живым). 🌱', subject: 'bio' },
+{ keys: ['что такое клетка'], answer: 'Клетка — наименьшая единица жизни. Все живые организмы состоят из клеток. Бывают одноклеточные (амёба, бактерии) и многоклеточные (растения, животные, человек). 🔬', subject: 'bio' },
+{ keys: ['строение клетки'], answer: 'Основные части клетки: ядро (хранит наследственную информацию), цитоплазма (внутренняя жидкость), мембрана (оболочка). У растительной клетки есть ещё клеточная стенка, хлоропласты и большая вакуоль. 🔬', subject: 'bio' },
+{ keys: ['что такое фотосинтез', 'фотосинтез'], answer: 'Фотосинтез — процесс, в котором растения на свету из углекислого газа и воды создают питательные вещества (сахар) и выделяют кислород. Происходит в зелёных частях растения благодаря хлорофиллу. 🌱', subject: 'bio' },
+{ keys: ['хлорофилл'], answer: 'Хлорофилл — зелёный пигмент в листьях растений. Именно он улавливает солнечный свет и обеспечивает фотосинтез. Без него растения не могли бы жить. 🌱', subject: 'bio' },
+{ keys: ['органы растения', 'части растения'], answer: 'У цветкового растения 6 органов: корень, стебель, лист, цветок, плод, семя. Корень и стебель с листьями — вегетативные органы. Цветок, плод и семя — генеративные (для размножения). 🌱', subject: 'bio' },
+{ keys: ['функции корня'], answer: 'Корень растения: 1) удерживает растение в почве, 2) всасывает воду и минеральные вещества, 3) запасает питательные вещества (например, у моркови, свёклы). 🌱', subject: 'bio' },
+{ keys: ['функции листа'], answer: 'Лист растения выполняет 3 главные функции: 1) фотосинтез (создание органических веществ), 2) дыхание (поглощение кислорода, выделение углекислого газа), 3) испарение воды. 🌿', subject: 'bio' },
+{ keys: ['функции цветка'], answer: 'Цветок — орган размножения растения. После опыления (перенос пыльцы с тычинок на пестик) образуется плод с семенами. Бывают разных форм и цветов, чтобы привлекать насекомых-опылителей. 🌸', subject: 'bio' },
+{ keys: ['голосеменные растения'], answer: 'Голосеменные — растения, у которых семена лежат открыто на чешуйках шишек (нет плода). Это хвойные: сосна, ель, кедр, пихта, лиственница. У большинства игольчатые листья (хвоя). 🌲', subject: 'bio' },
+{ keys: ['покрытосеменные растения', 'цветковые растения'], answer: 'Покрытосеменные (цветковые) — самая большая группа растений. У них есть цветок и плод, в котором защищены семена. Примеры: яблоня, роза, пшеница, дуб. 🌸', subject: 'bio' },
+{ keys: ['папоротники'], answer: 'Папоротники — древние растения. Размножаются спорами, а не семенами. Не имеют цветов. В древности папоротники достигали огромных размеров, и из них образовался каменный уголь. 🌿', subject: 'bio' },
+{ keys: ['мхи'], answer: 'Мхи — простые растения без настоящих корней. Не имеют сосудов, поэтому растут только во влажных местах. Размножаются спорами. Самый известный — сфагнум, из которого образуется торф. 🌿', subject: 'bio' },
+{ keys: ['водоросли'], answer: 'Водоросли — простейшие растения, живущие в воде. Не имеют настоящих корней, стеблей и листьев. Бывают зелёные, бурые (морская капуста — ламинария) и красные. 🌿', subject: 'bio' },
+{ keys: ['грибы это что', 'что такое грибы', 'грибы животные или растения'], answer: 'Грибы — отдельное царство живой природы. Не растения и не животные! Не могут фотосинтезировать (как растения), но и не охотятся (как животные). Питаются готовыми органическими веществами. Бывают съедобные и ядовитые. 🍄', subject: 'bio' },
+{ keys: ['строение гриба'], answer: 'Гриб состоит из шляпки и ножки (плодовое тело) и грибницы (мицелия) под землёй. Грибница — главная часть гриба, состоящая из тонких нитей-гифов. То, что мы собираем — лишь маленькая часть гриба! 🍄', subject: 'bio' },
+{ keys: ['съедобные грибы'], answer: 'Съедобные грибы: белый гриб, подосиновик, подберёзовик, лисичка, рыжик, опёнок, маслёнок, шампиньон, сыроежка. Главное правило: не уверен — не бери! 🍄', subject: 'bio' },
+{ keys: ['ядовитые грибы'], answer: 'Опасные ядовитые грибы: бледная поганка (самый ядовитый!), мухомор, ложные опята, желчный гриб, сатанинский гриб. Помни: если не знаешь гриб — не собирай и не ешь! ☠️', subject: 'bio' },
+{ keys: ['бактерии что такое'], answer: 'Бактерии — самые мелкие одноклеточные организмы, видны только в микроскоп. Живут везде: в почве, воде, воздухе, нашем теле. Бывают полезные (молочнокислые — делают йогурт) и вредные (вызывают болезни). 🦠', subject: 'bio' },
+{ keys: ['вирусы'], answer: 'Вирусы — самые маленькие организмы, в сотни раз меньше бактерий. Не могут жить и размножаться сами по себе — только внутри клетки. Вызывают болезни: грипп, ветрянку, корь, COVID-19. 🦠', subject: 'bio' },
+{ keys: ['классы животных'], answer: 'Главные классы позвоночных животных: 1) Рыбы, 2) Земноводные (лягушки), 3) Пресмыкающиеся (рептилии — змеи, ящерицы), 4) Птицы, 5) Млекопитающие. 🐾', subject: 'bio' },
+{ keys: ['млекопитающие'], answer: 'Млекопитающие — класс позвоночных, у которых детёныши питаются молоком матери. Тело покрыто шерстью. Теплокровные. К ним относятся кошки, собаки, мыши, киты, обезьяны и человек. 🐾', subject: 'bio' },
+{ keys: ['птицы признаки'], answer: 'Признаки птиц: тело покрыто перьями, передние конечности — крылья, есть клюв, размножаются яйцами, теплокровные. Большинство умеют летать. Примеры: воробей, орёл, пингвин (не летает!), страус. 🦅', subject: 'bio' },
+{ keys: ['рыбы признаки'], answer: 'Признаки рыб: живут в воде, дышат жабрами, тело покрыто чешуёй, есть плавники, размножаются икрой, холоднокровные. Примеры: щука, окунь, акула, лосось. 🐟', subject: 'bio' },
+{ keys: ['земноводные'], answer: 'Земноводные (амфибии) — животные, которые часть жизни проводят в воде, часть на суше. Кожа влажная, без чешуи. Размножаются в воде. Примеры: лягушки, жабы, тритоны, саламандры. 🐸', subject: 'bio' },
+{ keys: ['пресмыкающиеся', 'рептилии'], answer: 'Пресмыкающиеся (рептилии) — холоднокровные, кожа покрыта роговыми чешуйками или щитками. Размножаются яйцами на суше. Примеры: змеи, ящерицы, черепахи, крокодилы. 🐍', subject: 'bio' },
+{ keys: ['насекомые'], answer: 'Насекомые — класс беспозвоночных. У них 6 ног, тело состоит из 3 частей (голова, грудь, брюшко), у большинства есть крылья. Самая большая группа животных на Земле! Примеры: муравей, бабочка, жук, муха. 🐞', subject: 'bio' },
+{ keys: ['паукообразные'], answer: 'Паукообразные — НЕ насекомые! У них 8 ног (а не 6), тело из 2 частей. Примеры: пауки, скорпионы, клещи. Многие охотники, плетут паутину. 🕷️', subject: 'bio' },
+{ keys: ['скелет человека'], answer: 'Скелет человека состоит из более чем 200 костей. Главные части: череп, позвоночник, грудная клетка (рёбра), руки, ноги, таз. Скелет защищает органы и поддерживает тело. 💀', subject: 'bio' },
+{ keys: ['сколько костей у человека'], answer: 'У взрослого человека 206 костей. У новорождённого ребёнка костей больше — около 270, но некоторые потом срастаются. 💀', subject: 'bio' },
+{ keys: ['органы человека'], answer: 'Главные органы человека: мозг (думает), сердце (качает кровь), лёгкие (дышат), желудок (переваривает пищу), печень (очищает), почки (выводят отходы), кишечник (пищеварение). 🫀', subject: 'bio' },
+{ keys: ['органы чувств'], answer: 'У человека 5 главных органов чувств: 1) глаза (зрение), 2) уши (слух), 3) нос (обоняние), 4) язык (вкус), 5) кожа (осязание). С их помощью мы воспринимаем мир. 👁️', subject: 'bio' },
+{ keys: ['кровеносная система'], answer: 'Кровеносная система: сердце (мышца-насос) гонит кровь по сосудам. Артерии — несут кровь от сердца, вены — к сердцу, капилляры — мельчайшие сосуды. У человека 5–6 литров крови. 🫀', subject: 'bio' },
+{ keys: ['среда обитания'], answer: 'Среды обитания: 1) водная (рыбы, киты, водоросли), 2) наземно-воздушная (звери, птицы, растения суши), 3) почвенная (черви, кроты, корни растений), 4) организменная (паразиты живут внутри других организмов). 🌍', subject: 'bio' },
+{ keys: ['пищевая цепь', 'цепь питания'], answer: 'Пищевая цепь — последовательность, кто кого ест. Пример: трава → заяц → волк. Растения — производители (создают пищу через фотосинтез). Травоядные и хищники — потребители. 🌱➡️🐰➡️🐺', subject: 'bio' },
+{ keys: ['красная книга'], answer: 'Красная книга — список редких и исчезающих видов растений и животных, которым нужна охрана. В России в неё занесены амурский тигр, белый медведь, зубр, журавль-стерх и многие другие. 📕', subject: 'bio' },
+];
+
+// ============================================================
+// ПОИСК ПО БАЗЕ ЗНАНИЙ
+// ============================================================
+
+// Нормализация строки: убираем знаки, ё→е, всё в нижний регистр
+function normalize(str) {
+  return str.toLowerCase()
+    .replace(/ё/g, 'е')
+    .replace(/[^a-zа-я0-9\s]/gi, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+// Стоп-слова — игнорируем при поиске (они не несут смысла)
+const STOP_WORDS = new Set([
+  'что','как','это','такое','такой','такая','такие','есть','быть',
+  'мне','тебе','моя','твоя','свой','своя','своё','свои',
+  'про','для','без','над','под','при','между','через','перед','около',
+  'или','либо','то','же','ли','бы','уж','ну','вот','вон','тот','этот',
+  'и','а','но','да','нет','не','ни','же','ведь','уже','ещё','только',
+  'кто','где','когда','куда','откуда','зачем','почему','чему','чему',
+  'мы','вы','ты','он','она','оно','они','я','меня','тебя','его','её','их',
+  'будет','было','была','были','есть','стал','стала','стали','стало',
+  'если','чтобы','потому','значит','поэтому','тоже','также','очень',
+  'мой','твой','наш','ваш','их',
+  // Команды-глаголы (просьба) — игнорируем, они не уточняют тему
+  'расскажи','расскажу','рассказывать','объясни','объясню','объяснить',
+  'скажи','скажу','сказать','помоги','помочь','покажи','показать',
+  'найди','найти','вычисли','вычислить','посчитай','посчитать',
+  'напиши','написать','реши','решить','давай','напомни','напомнить',
+  'поясни','пояснить','подскажи','подсказать','уточни','уточнить',
+  'хочу','хочется','можешь','можно','нужно','надо','нужен','нужна',
+  'пожалуйста','будь','добра','добрый','хорошо','ладно',
+]);
+
+// Сравниваем слова: совпадает ли по основе
+function wordsMatch(a, b) {
+  if (a === b) return true;
+  if (a.length < 4 || b.length < 4) return false;
+  // Общий префикс минимум 4 символа, расхождение длины не больше 3
+  const minLen = Math.min(a.length, b.length);
+  let common = 0;
+  for (let i = 0; i < minLen; i++) {
+    if (a[i] === b[i]) common++;
+    else break;
+  }
+  if (common < 4) return false;
+  // Разница в длине не более 3 символов
+  if (Math.abs(a.length - b.length) > 3) return false;
+  return true;
+}
+
+// Главная функция поиска
+function findInKnowledge(query, currentSubject) {
+  if (!query || query.length < 2) return null;
+  const qWords = normalize(query).split(' ').filter(w => w.length > 1 && !STOP_WORDS.has(w));
+  if (qWords.length === 0) return null;
+  
+  let best = { score: 0, item: null, key: null };
+  
+  for (const item of KNOWLEDGE) {
+    // Жёсткий фильтр по предмету: если задан конкретный предмет (не free), 
+    // ищем только в нём + общих
+    if (currentSubject && currentSubject !== 'free' && item.subject !== currentSubject) {
+      continue; // пропускаем чужие предметы при выбранном предмете
+    }
+    
+    for (const key of item.keys) {
+      const kWords = normalize(key).split(' ').filter(w => w.length > 1 && !STOP_WORDS.has(w));
+      if (kWords.length === 0) continue;
+      
+      // Считаем сколько ключевых слов нашлось в запросе
+      let matches = 0;
+      for (const kw of kWords) {
+        if (qWords.some(qw => wordsMatch(qw, kw))) matches++;
+      }
+      
+      // Доля совпадения по ключу
+      const ratio = matches / kWords.length;
+      // Длина ключа — чем длиннее, тем точнее совпадение
+      const keyLengthBonus = Math.min(kWords.length, 4) * 0.1;
+      const score = ratio + keyLengthBonus;
+      
+      // Требования к совпадению:
+      // - Если ключ из 1 слова: запрос тоже должен быть коротким (≤3 значимых слов),
+      //   иначе это случайное совпадение в длинной фразе
+      // - Если ключ из 2+ слов: можно потерять одно
+      // - Если запрос из 1-2 слов и совпадает с ним полностью — берём
+      let minMatches;
+      if (kWords.length === 1) {
+        if (qWords.length > 3) continue; // длинная фраза + короткий ключ = ложное срабатывание
+        minMatches = 1;
+      } else if (kWords.length === 2) {
+        // Если запрос короткий (1 слово) и совпадает — пускай
+        if (qWords.length === 1 && matches === 1) {
+          minMatches = 1;
+        } else {
+          minMatches = 2;
+        }
+      } else {
+        // 3+ слов — можно потерять одно, но запрос должен быть осмысленным
+        if (qWords.length <= 2 && matches === qWords.length) {
+          // короткий запрос полностью покрыт ключом — ок
+          minMatches = qWords.length;
+        } else {
+          minMatches = kWords.length - 1;
+        }
+      }
+      
+      if (matches >= minMatches && score > best.score) {
+        best = { score, item, key };
+      }
+    }
+  }
+  
+  if (best.item) return best.item.answer;
+  return null;
+}
+
+// Простые приветствия и социальные ответы (всегда без ИИ)
+function findSocial(query) {
+  const t = normalize(query);
+  if (/^(привет|здравствуй|здорово|хай|hello|hi)\b/.test(t)) 
+    return 'Привет, Руслан! 👋 Как дела? Готов учиться? 🚀';
+  if (/(спасибо|благодарю|thanks|thank you)/.test(t)) 
+    return 'Всегда пожалуйста! 😊 Ты отлично справляешься!';
+  if (/^(пока|до свидан|bye|до встреч|увидимся)/.test(t)) 
+    return 'До встречи, Руслан! 👋 Молодец за занятие! 🌟';
+  if (/^(как дела|как ты|как поживаешь)/.test(t)) 
+    return 'У меня всё отлично! 😊 Я готова помогать тебе с уроками. А у тебя как? 🦉';
+  if (/^(кто ты|как тебя зовут|как тебя звать)/.test(t)) 
+    return 'Я УмняшКа — твой умный репетитор-сова! 🦉 Помогаю Руслану с уроками 5 класса. Давай учиться вместе! ✨';
+  if (/(не знаю|не понимаю|непонятно)/.test(t) && t.length < 25) 
+    return 'Не беспокойся! 😊 Расскажи поподробнее, что именно непонятно, и я объясню. Или нажми ⭐ ИИ — разберём вместе! 🚀';
+  if (/^(да|ага|угу|ок|окей|ok|yes)\s*[!.?]*$/.test(t)) 
+    return 'Отлично! 👍 Что разбираем дальше?';
+  if (/^(нет|неа|no)\s*[!.?]*$/.test(t)) 
+    return 'Хорошо! 😊 Если что — я рядом. Спрашивай!';
+  return null;
+}
+
+</script>
+<script>
+// ============================================================
+// УмняшКа — основная логика приложения
+// ============================================================
+
+const CONFIG = {
+  API_URL: 'https://api.vsegpt.ru/v1/chat/completions',
+  API_KEY: 'sk-or-vv-c80aa6b0d75df1d34d1ad2acb37c4caa5e898b900e7cf4d3a67bcd34bc55cffa',
+  MODEL: 'anthropic/claude-sonnet-4-5',
 };
 
-let subject = null;
-let xp = 0;
-let typingLock = false;
-let voiceOn = true;
-let femaleVoiceRu = null;
-let femaleVoiceEn = null;
-let recognition = null;
-let isListening = false;
-let photoBase64 = null;
-let photoMime = null;
-let chatHistory = [];
+const SUBJECTS = {
+  math: { name: 'Математика', emoji: '🔢', color: '#5c6bc0', prompt: 'Ты УмняшКа — добрый репетитор Руслана (5 класс) по математике. Объясняй просто, с примерами, кратко. Используй эмодзи. Если задача — решай по шагам.' },
+  rus:  { name: 'Русский язык', emoji: '📝', color: '#ec407a', prompt: 'Ты УмняшКа — добрый репетитор Руслана (5 класс) по русскому языку. Объясняй простыми словами, с примерами. Кратко.' },
+  lit:  { name: 'Литература', emoji: '📖', color: '#ab47bc', prompt: 'Ты УмняшКа — добрый репетитор Руслана (5 класс) по литературе. Рассказывай интересно и кратко.' },
+  eng:  { name: 'English', emoji: '🇬🇧', color: '#e53935', prompt: 'Ты УмняшКа — добрый репетитор Руслана (5 класс) по английскому. Помогай с переводами, грамматикой. Объясняй на русском.' },
+  hist: { name: 'История', emoji: '🏛️', color: '#8d6e63', prompt: 'Ты УмняшКа — добрый репетитор Руслана (5 класс) по истории. Рассказывай интересно и понятно.' },
+  geo:  { name: 'География', emoji: '🌍', color: '#26a69a', prompt: 'Ты УмняшКа — добрый репетитор Руслана (5 класс) по географии.' },
+  bio:  { name: 'Биология', emoji: '🌱', color: '#66bb6a', prompt: 'Ты УмняшКа — добрый репетитор Руслана (5 класс) по биологии.' },
+  free: { name: 'Свободно',   emoji: '💬', color: '#7c4dff', prompt: 'Ты УмняшКа — добрый умный собеседник Руслана (5 класс). Отвечай кратко, дружелюбно, с эмодзи.' },
+};
 
-// ===== VOICE =====
-function loadVoices() {
-  if (!window.speechSynthesis) return;
-  const voices = window.speechSynthesis.getVoices();
-  if (!voices.length) return;
-  const femaleNames = ['Milena','Katya','Samantha','Karen','Victoria','Allison','Susan','Tessa','Moira','Fiona','Serena'];
-  for (const n of femaleNames) {
-    const v = voices.find(v => v.name.includes(n) && v.lang.startsWith('ru'));
-    if (v) { femaleVoiceRu = v; break; }
+// Состояние приложения
+let state = {
+  subject: null,
+  history: [],     // история диалога с ИИ для контекста
+  xp: parseInt(localStorage.getItem('umnyashka_xp') || '0'),
+  voiceOn: localStorage.getItem('umnyashka_voice') !== 'off',
+  photoData: null, // base64 фото для отправки в ИИ
+};
+
+// =============== ИНИЦИАЛИЗАЦИЯ ===============
+window.addEventListener('DOMContentLoaded', () => {
+  updateXP(0);
+  updateVoiceBtn();
+  // Если был выбран предмет — восстановить
+  const lastSubj = localStorage.getItem('umnyashka_subject');
+  if (lastSubj && SUBJECTS[lastSubj]) {
+    pick(lastSubj);
   }
-  if (!femaleVoiceRu) femaleVoiceRu = voices.find(v => v.lang.startsWith('ru')) || null;
-  for (const n of femaleNames) {
-    const v = voices.find(v => v.name.includes(n) && v.lang.startsWith('en'));
-    if (v) { femaleVoiceEn = v; break; }
-  }
-  if (!femaleVoiceEn) femaleVoiceEn = voices.find(v => v.lang.startsWith('en') && /samantha|karen|victoria|allison|susan|tessa|moira|fiona|serena/i.test(v.name)) || voices.find(v => v.lang.startsWith('en')) || null;
-}
-if (window.speechSynthesis) { loadVoices(); window.speechSynthesis.onvoiceschanged = loadVoices; }
+});
 
-function speak(text, lang) {
-  if (!voiceOn || !window.speechSynthesis) return;
-  let clean = text.replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{27BF}•]/gu, '');
-  if (lang === 'en') {
-    const m = clean.match(/[A-Za-z][A-Za-z\s']+/g);
-    if (!m) return;
-    clean = m.join('. ');
-  } else {
-    clean = clean.replace(/[A-Za-z]+/g, '').replace(/\s+/g, ' ').trim();
-  }
-  if (!clean.trim()) return;
-  window.speechSynthesis.cancel();
-  const u = new SpeechSynthesisUtterance(clean);
-  u.rate = lang === 'en' ? 0.85 : 1.0;
-  u.pitch = 1.15;
-  u.volume = 1.0;
-  if (lang === 'en') { u.lang = 'en-US'; if (femaleVoiceEn) u.voice = femaleVoiceEn; }
-  else { u.lang = 'ru-RU'; if (femaleVoiceRu) u.voice = femaleVoiceRu; }
-  window.speechSynthesis.speak(u);
-}
-
-function toggleVoice() {
-  voiceOn = !voiceOn;
-  const btn = document.getElementById('voiceBtn');
-  btn.textContent = voiceOn ? '🔊' : '🔇';
-  btn.classList.toggle('off', !voiceOn);
-  if (!voiceOn && window.speechSynthesis) window.speechSynthesis.cancel();
-}
-
-// ===== PHOTO =====
-function handlePhoto(e) {
-  const file = e.target.files[0];
-  if (!file) return;
-  photoMime = file.type;
-  const reader = new FileReader();
-  reader.onload = (ev) => {
-    photoBase64 = ev.target.result.split(',')[1];
-    document.getElementById('photoThumb').src = ev.target.result;
-    document.getElementById('photoPreview').style.display = 'block';
-    document.getElementById('inp').placeholder = 'Добавь вопрос к фото или нажми ⭐ ИИ...';
-  };
-  reader.readAsDataURL(file);
-  e.target.value = '';
-}
-
-function removePhoto() {
-  photoBase64 = null;
-  photoMime = null;
-  document.getElementById('photoPreview').style.display = 'none';
-  document.getElementById('photoThumb').src = '';
-  document.getElementById('inp').placeholder = subject === 'eng' ? 'Напиши или скажи по-английски... 🎤' : 'Напиши вопрос или ответ...';
-}
-
-// ===== UI HELPERS =====
-function pick(s) {
-  subject = s;
-  typingLock = false;
-  xp = 0;
-  chatHistory = [];
-  photoBase64 = null;
-  photoMime = null;
-  document.getElementById('photoPreview').style.display = 'none';
-  document.getElementById('xpFill').style.width = '0%';
-  document.getElementById('xpCount').textContent = '0 XP';
-  document.getElementById('xpStars').textContent = '☆☆☆☆☆';
+// =============== ВЫБОР ПРЕДМЕТА ===============
+function pick(subj) {
+  state.subject = subj;
+  localStorage.setItem('umnyashka_subject', subj);
+  // Подсветка
   document.querySelectorAll('.subj').forEach(el => el.classList.remove('active'));
-  document.querySelector(`.subj[data-s="${s}"]`).classList.add('active');
+  document.querySelector(`.subj[data-s="${subj}"]`).classList.add('active');
+  // XP-полоса видна
   document.getElementById('xpWrap').style.display = 'flex';
+  // Чат: убрать welcome
+  const chat = document.getElementById('chat');
+  const w = document.getElementById('welcome');
+  if (w) w.remove();
+  // Включить кнопку отправки
   document.getElementById('sendBtn').disabled = false;
   document.getElementById('aiBtn').disabled = false;
-  document.getElementById('inp').placeholder = s === 'eng' ? 'Напиши или скажи по-английски... 🎤' : 'Напиши вопрос или ответ...';
-  if (window.speechSynthesis) window.speechSynthesis.cancel();
-  stopMic();
-  document.getElementById('chat').innerHTML = '';
-  addMsg(SUBJECTS[s].greet, 'bot', false);
-  setTimeout(() => addHints(SUBJECTS[s].hints), 400);
+  // Стартовое сообщение от УмняшКи
+  const s = SUBJECTS[subj];
+  const greetings = {
+    math: 'Открыли математику! 🔢 Давай решать задачи! Напиши пример или вопрос.',
+    rus:  'Русский язык! 📝 Спрашивай про правила, слова, разбор предложения.',
+    lit:  'Литература! 📖 Расскажу про писателей, произведения, поэзию.',
+    eng:  'English time! 🇬🇧 Давай учить новые слова и фразы!',
+    hist: 'История! 🏛️ Расскажу про древние цивилизации, войны, царей.',
+    geo:  'География! 🌍 Спрашивай про страны, материки, океаны, природу.',
+    bio:  'Биология! 🌱 Растения, животные, человек, клетки — всё разберём!',
+    free: 'Свободный режим! 💬 Спрашивай о чём угодно — постараюсь помочь.',
+  };
+  // Очищаем чат при смене предмета? Нет — оставляем историю, добавляем приветствие
+  addBotMsg(greetings[subj], subj);
 }
 
-function addHints(hints) {
+// =============== СООБЩЕНИЯ ===============
+function addUserMsg(text, photoData = null) {
+  const chat = document.getElementById('chat');
+  const row = document.createElement('div');
+  row.className = 'msg-row user';
+  row.innerHTML = `
+    <div class="msg-av user">😊</div>
+    <div class="bubble user">
+      ${escapeHtml(text)}
+      ${photoData ? `<img class="chat-img" src="${photoData}" alt="фото">` : ''}
+    </div>
+  `;
+  chat.appendChild(row);
+  scrollChat();
+}
+
+function addBotMsg(text, subj = null, isAI = false) {
+  const chat = document.getElementById('chat');
+  const row = document.createElement('div');
+  row.className = 'msg-row bot';
+  const subjInfo = subj ? SUBJECTS[subj] : null;
+  const tag = subjInfo
+    ? `<span class="subj-tag" style="background:${subjInfo.color}22;color:${subjInfo.color}">${subjInfo.emoji} ${subjInfo.name}</span>`
+    : '';
+  const aiTag = isAI ? `<span class="ai-tag">⭐ Ответ ИИ</span>` : '';
+  const id = 'msg_' + Date.now() + '_' + Math.random().toString(36).slice(2,7);
+  row.innerHTML = `
+    <div class="msg-av bot">🦉</div>
+    <div class="bubble bot ${isAI ? 'ai-bubble' : ''}" id="${id}">
+      ${aiTag || tag}
+      <div>${formatText(text)}</div>
+      <button class="speak-btn" onclick="speak('${id}')" title="Озвучить">🔊</button>
+    </div>
+  `;
+  chat.appendChild(row);
+  scrollChat();
+  // Автоматическая озвучка если включён голос
+  if (state.voiceOn) setTimeout(() => speakText(text), 300);
+  return id;
+}
+
+function showQuickReplies(options) {
   const chat = document.getElementById('chat');
   const wrap = document.createElement('div');
   wrap.className = 'quick-replies';
-  hints.forEach(h => {
+  options.forEach(opt => {
     const btn = document.createElement('button');
     btn.className = 'qr';
-    btn.textContent = h;
-    btn.onclick = () => { wrap.remove(); submitText(h); };
+    btn.textContent = opt.text;
+    btn.onclick = () => {
+      wrap.remove();
+      opt.action();
+    };
     wrap.appendChild(btn);
   });
   chat.appendChild(wrap);
-  chat.scrollTop = chat.scrollHeight;
+  scrollChat();
+  return wrap;
 }
 
-function addMsg(text, type, isAI, imgSrc) {
-  const chat = document.getElementById('chat');
-  const row = document.createElement('div');
-  row.className = `msg-row ${type}`;
-
-  const av = document.createElement('div');
-  av.className = `msg-av ${type}`;
-  av.textContent = type === 'bot' ? '🦉' : '😊';
-
-  const bubble = document.createElement('div');
-  bubble.className = `bubble ${type}${isAI ? ' ai-bubble' : ''}`;
-
-  if (type === 'bot' && subject) {
-    const tag = document.createElement('span');
-    tag.className = isAI ? 'ai-tag' : 'subj-tag';
-    tag.style.background = isAI ? '' : (SUBJECTS[subject].color + '22');
-    tag.style.color = isAI ? '' : SUBJECTS[subject].color;
-    tag.textContent = isAI ? '⭐ ИИ · ' + SUBJECTS[subject].name : SUBJECTS[subject].name;
-    bubble.appendChild(tag);
-    bubble.appendChild(document.createElement('br'));
-  }
-
-  if (imgSrc) {
-    const img = document.createElement('img');
-    img.src = imgSrc;
-    img.className = 'chat-img';
-    bubble.appendChild(img);
-    bubble.appendChild(document.createElement('br'));
-  }
-
-  text.split('\n').forEach((line, i) => {
-    if (i > 0) bubble.appendChild(document.createElement('br'));
-    bubble.appendChild(document.createTextNode(line));
-  });
-
-  if (type === 'bot') {
-    const sb = document.createElement('button');
-    sb.className = 'speak-btn';
-    sb.textContent = '🔊';
-    sb.title = 'Послушать';
-    sb.onclick = (e) => { e.stopPropagation(); speak(text, SUBJECTS[subject]?.lang || 'ru'); };
-    bubble.appendChild(sb);
-    if (voiceOn) setTimeout(() => speak(text, SUBJECTS[subject]?.lang || 'ru'), 300);
-  }
-
-  row.appendChild(av);
-  row.appendChild(bubble);
-  chat.appendChild(row);
-  chat.scrollTop = chat.scrollHeight;
-}
-
-function showTyping(ai) {
+function showTyping(isAI = false) {
   const chat = document.getElementById('chat');
   const row = document.createElement('div');
   row.className = 'msg-row bot';
   row.id = 'typing';
-  const av = document.createElement('div');
-  av.className = 'msg-av bot';
-  av.textContent = '🦉';
-  const bubble = document.createElement('div');
-  bubble.className = `bubble bot${ai ? ' ai-bubble' : ''}`;
-  bubble.innerHTML = `<div class="${ai ? 'ai-thinking' : 'typing-dots'}"><span></span><span></span><span></span></div>`;
-  row.appendChild(av);
-  row.appendChild(bubble);
+  row.innerHTML = `
+    <div class="msg-av bot">🦉</div>
+    <div class="bubble bot">
+      <div class="${isAI ? 'ai-thinking' : 'typing-dots'}"><span></span><span></span><span></span></div>
+    </div>
+  `;
   chat.appendChild(row);
-  chat.scrollTop = chat.scrollHeight;
+  scrollChat();
+  if (talkMode) showTalkStatus('thinking');
 }
-function hideTyping() { const el = document.getElementById('typing'); if (el) el.remove(); }
 
-function addXP(amount, praise) {
-  xp = Math.min(xp + amount, 500);
-  document.getElementById('xpFill').style.width = (xp / 5) + '%';
+function hideTyping() {
+  const t = document.getElementById('typing');
+  if (t) t.remove();
+}
+
+function formatText(text) {
+  // Простое экранирование + поддержка переносов строк
+  return escapeHtml(text).replace(/\n/g, '<br>');
+}
+
+function escapeHtml(s) {
+  return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function scrollChat() {
+  const chat = document.getElementById('chat');
+  setTimeout(() => { chat.scrollTop = chat.scrollHeight; }, 50);
+}
+
+// =============== ОТПРАВКА СООБЩЕНИЙ ===============
+function send() {
+  const inp = document.getElementById('inp');
+  const text = inp.value.trim();
+  if (!text && !state.photoData) return;
+  if (!state.subject) { pick('free'); }
+
+  // Показать сообщение пользователя
+  addUserMsg(text || '📸 Фото', state.photoData);
+  const photoToSend = state.photoData;
+  inp.value = '';
+  resize(inp);
+  removePhoto();
+
+  // Если фото — сразу к ИИ (фото мы сами не разберём)
+  if (photoToSend) {
+    askAI(text || 'Помоги решить задачу с фото', photoToSend);
+    return;
+  }
+
+  // Сначала ищем ответ сами!
+  const localAnswer = tryLocalAnswer(text);
+  if (localAnswer) {
+    showTyping(false);
+    setTimeout(() => {
+      hideTyping();
+      addBotMsg(localAnswer, state.subject);
+      addXP(5);
+    }, 400 + Math.random() * 300);
+    return;
+  }
+
+  // Не знаем — предлагаем кнопку «Спросить ИИ»
+  showTyping(false);
+  setTimeout(() => {
+    hideTyping();
+    addBotMsg('Хм, на этот вопрос я сама не отвечу 🤔 Хочешь, спросим у ИИ?', state.subject);
+    showQuickReplies([
+      { text: '⭐ Да, спросить ИИ', action: () => askAI(text) },
+      { text: '✏️ Спрошу иначе', action: () => {
+        const inp = document.getElementById('inp');
+        inp.value = text;
+        inp.focus();
+        resize(inp);
+      }},
+    ]);
+  }, 500);
+}
+
+// Локальный ответ: математика + база знаний + социальное
+function tryLocalAnswer(text) {
+  // 1) Социальные фразы (привет, спасибо и т.д.)
+  const social = findSocial(text);
+  if (social) return social;
+
+  // 2) Простой пример с числами (если математика или свободный режим)
+  if (state.subject === 'math' || state.subject === 'free' || /^[\d\s+\-*/×÷.,()=?]+$/.test(text)) {
+    const calc = tryCalc(text);
+    if (calc) return calc;
+  }
+
+  // 3) База знаний
+  const kb = findInKnowledge(text, state.subject);
+  if (kb) return kb;
+
+  return null;
+}
+
+// Простой вычислитель арифметики
+function tryCalc(text) {
+  // Чистим: убираем «сколько будет», «=», «?»
+  let expr = text.toLowerCase()
+    .replace(/сколько\s+будет/g, '')
+    .replace(/чему\s+равно/g, '')
+    .replace(/посчитай/g, '')
+    .replace(/реши\s+пример/g, '')
+    .replace(/[?=]/g, '')
+    .replace(/×/g, '*')
+    .replace(/÷/g, '/')
+    .replace(/,/g, '.')
+    .replace(/плюс/g, '+')
+    .replace(/минус/g, '-')
+    .replace(/умножить\s+на/g, '*')
+    .replace(/разделить\s+на/g, '/')
+    .replace(/делить\s+на/g, '/')
+    .replace(/умножь/g, '*')
+    .trim();
+  // Только цифры и операторы
+  if (!/^[\d\s+\-*/.()]+$/.test(expr)) return null;
+  if (!/[+\-*/]/.test(expr)) return null; // нужен хотя бы один оператор
+  if (expr.length > 50) return null;
+  try {
+    const result = Function('"use strict"; return (' + expr + ')')();
+    if (typeof result !== 'number' || !isFinite(result)) return null;
+    const pretty = Number.isInteger(result) ? result : Math.round(result * 1000) / 1000;
+    return `${expr.replace(/\*/g,'×').replace(/\//g,'÷')} = ${pretty} 🎯`;
+  } catch (e) { return null; }
+}
+
+// =============== ИИ ===============
+async function sendAI() {
+  const inp = document.getElementById('inp');
+  const text = inp.value.trim();
+  if (!text && !state.photoData) {
+    addBotMsg('Напиши вопрос или прикрепи фото — и я спрошу ИИ! 📸', state.subject);
+    return;
+  }
+  if (!state.subject) pick('free');
+  addUserMsg(text || '📸 Фото', state.photoData);
+  const photoToSend = state.photoData;
+  inp.value = '';
+  resize(inp);
+  removePhoto();
+  askAI(text || 'Помоги с задачей на фото', photoToSend);
+}
+
+async function askAI(question, photoData = null) {
+  showTyping(true);
+  const subj = SUBJECTS[state.subject || 'free'];
+  
+  // Формируем сообщение
+  const userContent = photoData
+    ? [
+        { type: 'text', text: question },
+        { type: 'image_url', image_url: { url: photoData } }
+      ]
+    : question;
+
+  // История диалога — последние 6 сообщений для контекста
+  const recent = state.history.slice(-6);
+
+  const messages = [
+    { role: 'system', content: subj.prompt + ' Отвечай кратко (3-5 предложений), используй эмодзи. Объясняй для 5 класса.' },
+    ...recent,
+    { role: 'user', content: userContent }
+  ];
+
+  try {
+    const response = await fetch(CONFIG.API_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + CONFIG.API_KEY
+      },
+      body: JSON.stringify({
+        model: CONFIG.MODEL,
+        messages: messages,
+        max_tokens: 600,
+        temperature: 0.6
+      })
+    });
+    if (!response.ok) throw new Error('Status ' + response.status);
+    const data = await response.json();
+    const answer = data.choices?.[0]?.message?.content || 'Не получилось ответить, попробуй ещё раз 🤔';
+    
+    hideTyping();
+    addBotMsg(answer, state.subject, true);
+    
+    // Сохраняем в историю
+    state.history.push({ role: 'user', content: question });
+    state.history.push({ role: 'assistant', content: answer });
+    if (state.history.length > 20) state.history = state.history.slice(-20);
+    
+    addXP(10);
+  } catch (e) {
+    hideTyping();
+    addBotMsg('Не получилось связаться с ИИ 😔 Проверь интернет и попробуй ещё раз!', state.subject);
+    console.error(e);
+  }
+}
+
+// =============== ВВОД ===============
+function onKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    send();
+  }
+}
+
+function resize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 110) + 'px';
+}
+
+// =============== ФОТО ===============
+function handlePhoto(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    state.photoData = ev.target.result;
+    document.getElementById('photoThumb').src = state.photoData;
+    document.getElementById('photoPreview').style.display = 'block';
+  };
+  reader.readAsDataURL(file);
+  e.target.value = ''; // сброс, чтобы можно было выбрать то же фото снова
+}
+
+function removePhoto() {
+  state.photoData = null;
+  document.getElementById('photoPreview').style.display = 'none';
+}
+
+// =============== ГОЛОС (озвучка) ===============
+let currentUtter = null;
+function speakText(text) {
+  if (!('speechSynthesis' in window)) return;
+  // Чистим текст от эмодзи и тегов для озвучки
+  const clean = text.replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/gu, '').trim();
+  if (!clean) return;
+  speechSynthesis.cancel();
+  
+  // В режиме «Разговор» — останавливаем распознавание, пока говорим
+  if (talkMode && recognition && isListening) {
+    try { recognition.stop(); } catch (e) {}
+  }
+  
+  const u = new SpeechSynthesisUtterance(clean);
+  u.lang = state.subject === 'eng' ? 'en-US' : 'ru-RU';
+  u.rate = 1.0;
+  u.pitch = 1.1;
+  // Подбираем женский голос
+  const voices = speechSynthesis.getVoices();
+  const female = voices.find(v => /female|milena|samantha|alena|kira/i.test(v.name) && v.lang.startsWith(u.lang.slice(0,2)))
+              || voices.find(v => v.lang.startsWith(u.lang.slice(0,2)));
+  if (female) u.voice = female;
+  
+  u.onstart = () => {
+    isSpeaking = true;
+    if (talkMode) showTalkStatus('speaking');
+  };
+  u.onend = () => {
+    isSpeaking = false;
+    // После того как УмняшКа замолчала — снова слушаем (если в режиме «Разговор»)
+    if (talkMode) {
+      setTimeout(() => {
+        if (talkMode && !isSpeaking) startListening();
+      }, 300);
+    }
+  };
+  u.onerror = () => {
+    isSpeaking = false;
+    if (talkMode) {
+      setTimeout(() => { if (talkMode) startListening(); }, 300);
+    }
+  };
+  
+  currentUtter = u;
+  speechSynthesis.speak(u);
+}
+
+function speak(msgId) {
+  const el = document.getElementById(msgId);
+  if (!el) return;
+  // Берём только текст ответа, без тегов и кнопок
+  const textEl = el.querySelector('div');
+  const text = textEl ? textEl.textContent : el.textContent;
+  speakText(text);
+}
+
+function toggleVoice() {
+  state.voiceOn = !state.voiceOn;
+  localStorage.setItem('umnyashka_voice', state.voiceOn ? 'on' : 'off');
+  updateVoiceBtn();
+  if (!state.voiceOn) speechSynthesis.cancel();
+}
+
+function updateVoiceBtn() {
+  const btn = document.getElementById('voiceBtn');
+  if (state.voiceOn) {
+    btn.classList.remove('off');
+    btn.textContent = '🔊';
+  } else {
+    btn.classList.add('off');
+    btn.textContent = '🔇';
+  }
+}
+
+// =============== МИКРОФОН ===============
+let recognition = null;
+let isListening = false;
+let talkMode = false;        // режим непрерывного разговора
+let isSpeaking = false;      // УмняшКа сейчас говорит
+let silenceTimer = null;     // таймер тишины для авто-отправки
+let lastTranscript = '';     // последний распознанный текст
+let restartTimer = null;     // таймер перезапуска распознавания
+
+function ensureRecognition() {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) return null;
+  if (recognition) return recognition;
+  recognition = new SR();
+  recognition.lang = state.subject === 'eng' ? 'en-US' : 'ru-RU';
+  recognition.continuous = true;       // непрерывный режим
+  recognition.interimResults = true;   // промежуточные результаты — для ловли пауз
+  
+  recognition.onstart = () => {
+    isListening = true;
+    document.getElementById('micBtn').classList.add('listening');
+    if (talkMode) showTalkStatus('listening');
+  };
+  
+  recognition.onresult = (e) => {
+    // Собираем последний результат
+    let interim = '';
+    let final = '';
+    for (let i = e.resultIndex; i < e.results.length; i++) {
+      const txt = e.results[i][0].transcript;
+      if (e.results[i].isFinal) final += txt;
+      else interim += txt;
+    }
+    const fullText = (final + interim).trim();
+    if (!fullText) return;
+    lastTranscript = fullText;
+    
+    // В обычном режиме — просто вставляем в поле
+    if (!talkMode) {
+      document.getElementById('inp').value = fullText;
+      resize(document.getElementById('inp'));
+      return;
+    }
+    
+    // В режиме «Разговор» — детектим паузу
+    // Сбрасываем таймер при каждом новом куске речи
+    if (silenceTimer) clearTimeout(silenceTimer);
+    silenceTimer = setTimeout(() => {
+      // Тишина 1.5 сек — отправляем
+      if (lastTranscript && lastTranscript.length > 1) {
+        handleVoiceInput(lastTranscript);
+        lastTranscript = '';
+      }
+    }, 1500);
+  };
+  
+  recognition.onerror = (e) => {
+    console.warn('Распознавание ошибка:', e.error);
+    if (e.error === 'not-allowed' || e.error === 'permission-denied') {
+      addBotMsg('Не получаю доступ к микрофону 😔 Разреши его в настройках браузера.', state.subject);
+      stopTalkMode();
+    }
+  };
+  
+  recognition.onend = () => {
+    isListening = false;
+    document.getElementById('micBtn').classList.remove('listening');
+    // В режиме «Разговор» — автоперезапуск, если не говорим сами
+    if (talkMode && !isSpeaking) {
+      restartTimer = setTimeout(() => {
+        try { recognition.start(); } catch (e) {}
+      }, 200);
+    }
+  };
+  return recognition;
+}
+
+// Старая кнопка микрофона — обычный одиночный режим
+function toggleMic() {
+  const r = ensureRecognition();
+  if (!r) {
+    addBotMsg('Микрофон не поддерживается на этом устройстве 😔 Попробуй в Chrome или Safari.', state.subject);
+    return;
+  }
+  if (talkMode) {
+    // Если включён режим «Разговор» — кнопка ничего не делает
+    return;
+  }
+  if (isListening) { try { r.stop(); } catch (e) {} return; }
+  r.continuous = false;     // одиночный режим
+  r.interimResults = false;
+  r.lang = state.subject === 'eng' ? 'en-US' : 'ru-RU';
+  try { r.start(); } catch (e) {}
+}
+
+// =============== РЕЖИМ «РАЗГОВОР» ===============
+function toggleTalkMode() {
+  if (talkMode) stopTalkMode();
+  else startTalkMode();
+}
+
+function startTalkMode() {
+  const r = ensureRecognition();
+  if (!r) {
+    addBotMsg('Голосовой режим не поддерживается на этом устройстве 😔 Используй Chrome или Safari.', state.subject);
+    return;
+  }
+  if (!state.subject) pick('free');
+  talkMode = true;
+  state.voiceOn = true; // в режиме разговор голос обязательно включён
+  localStorage.setItem('umnyashka_voice', 'on');
+  updateVoiceBtn();
+  document.getElementById('talkBtn').classList.add('talking');
+  document.getElementById('talkBtn').textContent = '🔴';
+  document.getElementById('talkBtn').title = 'Выключить разговор';
+  
+  // Приветствие в режиме разговора
+  addBotMsg('Включила голосовой режим 🎙️ Просто говори — я слушаю. Чтобы выключить, скажи «стоп» или нажми красную кнопку.', state.subject);
+  
+  // Запускаем распознавание после того как УмняшКа произнесёт приветствие
+  setTimeout(() => {
+    if (talkMode) startListening();
+  }, 4500);
+}
+
+function stopTalkMode() {
+  talkMode = false;
+  if (silenceTimer) { clearTimeout(silenceTimer); silenceTimer = null; }
+  if (restartTimer) { clearTimeout(restartTimer); restartTimer = null; }
+  if (recognition) try { recognition.stop(); } catch (e) {}
+  if ('speechSynthesis' in window) speechSynthesis.cancel();
+  isSpeaking = false;
+  hideTalkStatus();
+  const btn = document.getElementById('talkBtn');
+  btn.classList.remove('talking');
+  btn.textContent = '🎙️';
+  btn.title = 'Режим Разговор';
+}
+
+function startListening() {
+  if (!talkMode || !recognition) return;
+  if (isSpeaking) return; // не слушаем пока сами говорим
+  recognition.continuous = true;
+  recognition.interimResults = true;
+  recognition.lang = state.subject === 'eng' ? 'en-US' : 'ru-RU';
+  try {
+    recognition.start();
+    showTalkStatus('listening');
+  } catch (e) {
+    // Уже запущено — игнорируем
+  }
+}
+
+function showTalkStatus(mode) {
+  hideTalkStatus();
+  if (!talkMode) return;
+  const status = document.createElement('div');
+  status.className = 'talk-status';
+  status.id = 'talkStatus';
+  if (mode === 'listening') {
+    status.innerHTML = '<div class="talk-waves"><span></span><span></span><span></span><span></span><span></span></div> Слушаю...';
+  } else if (mode === 'thinking') {
+    status.innerHTML = '<div class="pulse-dot"></div> Думаю...';
+  } else if (mode === 'speaking') {
+    status.innerHTML = '🔊 Говорю...';
+  }
+  document.body.appendChild(status);
+}
+
+function hideTalkStatus() {
+  const s = document.getElementById('talkStatus');
+  if (s) s.remove();
+}
+
+// Обработка распознанной речи в режиме «Разговор»
+function handleVoiceInput(text) {
+  text = text.trim();
+  if (!text) return;
+  
+  // Голосовые команды
+  const lower = text.toLowerCase();
+  if (/^(стоп|хватит|выключи|закончи|пока|до свидания|хватит говорить)\b/.test(lower)) {
+    addUserMsg(text);
+    addBotMsg('Хорошо, выключаю голосовой режим. До встречи! 👋', state.subject);
+    setTimeout(() => stopTalkMode(), 3000);
+    return;
+  }
+  if (/^(замолчи|тише|молчи|не говори)\b/.test(lower)) {
+    if ('speechSynthesis' in window) speechSynthesis.cancel();
+    isSpeaking = false;
+    return;
+  }
+  if (/^(очисти|очистить|сотри|сотрите)\s+(чат|историю|всё|все)/.test(lower)) {
+    addUserMsg(text);
+    document.querySelectorAll('.msg-row, .quick-replies').forEach(el => el.remove());
+    addBotMsg('Чат очищен! 🧹 Что разбираем?', state.subject);
+    return;
+  }
+  
+  // Голосовое переключение предмета
+  const subjMap = {
+    'математик': 'math', 'математ': 'math', 'математику': 'math',
+    'русский': 'rus', 'русск': 'rus',
+    'литератур': 'lit',
+    'английск': 'eng', 'инглиш': 'eng', 'english': 'eng',
+    'истори': 'hist',
+    'географ': 'geo',
+    'биолог': 'bio',
+    'свободн': 'free',
+  };
+  for (const [key, code] of Object.entries(subjMap)) {
+    if (new RegExp('^(включи|открой|давай|перейди на|переключи на)?\\s*' + key).test(lower) && lower.length < 30) {
+      addUserMsg(text);
+      pick(code);
+      return;
+    }
+  }
+  
+  // Обычный вопрос — отправляем как обычно через send()
+  document.getElementById('inp').value = text;
+  send();
+}
+
+// =============== XP ===============
+function addXP(n) {
+  state.xp += n;
+  localStorage.setItem('umnyashka_xp', state.xp);
+  updateXP(n);
+}
+
+function updateXP(gained) {
+  const max = 500;
+  const xp = Math.min(state.xp, max);
+  const pct = (xp / max) * 100;
+  document.getElementById('xpFill').style.width = pct + '%';
   document.getElementById('xpCount').textContent = xp + ' XP';
-  document.getElementById('xpStars').textContent = '★'.repeat(Math.floor(xp/100)) + '☆'.repeat(5-Math.floor(xp/100));
-  if (praise) {
+  // Звёзды
+  const starCount = Math.min(5, Math.floor(xp / 100));
+  document.getElementById('xpStars').textContent = '★'.repeat(starCount) + '☆'.repeat(5 - starCount);
+  // Награда при добавлении XP
+  if (gained > 0) {
     const r = document.getElementById('reward');
-    r.textContent = '+' + amount + ' XP! 🌟';
+    r.textContent = `+${gained} XP! 🎉`;
     r.classList.remove('show');
     void r.offsetWidth;
     r.classList.add('show');
   }
 }
 
-// ===== AI CALL =====
-async function callAI(userText, imgBase64, imgMime) {
-  const s = SUBJECTS[subject];
-  const userContent = [];
-
-  if (imgBase64) {
-    userContent.push({ type: 'image_url', image_url: { url: `data:${imgMime};base64,${imgBase64}` } });
-  }
-  userContent.push({ type: 'text', text: userText || 'Помоги разобраться с этим заданием на фото' });
-
-  chatHistory.push({ role: 'user', content: userContent });
-
-  const messages = [
-    { role: 'system', content: s.system },
-    ...chatHistory.slice(-10)
-  ];
-
-  const resp = await fetch(API_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${API_KEY}` },
-    body: JSON.stringify({ model: AI_MODEL, messages, max_tokens: 800, temperature: 0.7 })
-  });
-
-  if (!resp.ok) {
-    const err = await resp.text();
-    throw new Error(err);
-  }
-
-  const data = await resp.json();
-  const reply = data.choices?.[0]?.message?.content || 'Упс, попробуй ещё раз!';
-  chatHistory.push({ role: 'assistant', content: reply });
-  return reply;
-}
-
-// ===== SEND FUNCTIONS =====
-function submitText(text) {
-  if (!text.trim() || typingLock) return;
-  if (!subject) { addMsg('Сначала выбери предмет вверху! 👆', 'bot', false); return; }
-  typingLock = true;
-  addMsg(text, 'user');
-  addXP(5, false);
-  showTyping(false);
-
-  // Simple local responses
-  const t = text.toLowerCase();
-  let reply = null;
-
-  if (t.match(/привет|hello|hi|хай/)) reply = 'Привет, Руслан! 👋 Как дела? Готов учиться? 🚀';
-  else if (t.match(/спасибо|thanks/)) reply = 'Всегда пожалуйста! 😊 Ты отлично справляешься!';
-  else if (t.match(/пока|bye|до свидан/)) reply = 'До встречи, Руслан! 👋 Молодец за занятие! 🌟';
-  else if (t.match(/не знаю|не понимаю|помоги/)) reply = 'Не беспокойся! 😊 Попробуй нажать кнопку ⭐ ИИ — я разберу подробнее!';
-
-  if (reply) {
-    setTimeout(() => { hideTyping(); addMsg(reply, 'bot', false); addXP(5, false); typingLock = false; }, 700);
-  } else {
-    // Auto-use AI for unknown questions
-    setTimeout(() => {
-      hideTyping();
-      typingLock = false;
-      sendAIWithText(text, null, null);
-    }, 400);
-  }
-}
-
-async function sendAIWithText(text, imgB64, imgMime) {
-  if (typingLock) return;
-  typingLock = true;
-  showTyping(true);
-  try {
-    const reply = await callAI(text, imgB64, imgMime);
-    hideTyping();
-    addMsg(reply, 'bot', true);
-    addXP(25, true);
-  } catch(e) {
-    hideTyping();
-    addMsg('Не смогла связаться с ИИ 😔 Проверь интернет и попробуй ещё раз!', 'bot', false);
-  }
-  typingLock = false;
-}
-
-function send() {
-  const inp = document.getElementById('inp');
-  const text = inp.value.trim();
-  if (!text && !photoBase64) return;
-  if (!subject) { addMsg('Сначала выбери предмет вверху! 👆', 'bot', false); return; }
-  inp.value = '';
-  inp.style.height = 'auto';
-  if (text) addMsg(text, 'user');
-  removePhoto();
-  addXP(5, false);
-  submitText(text);
-}
-
-async function sendAI() {
-  const inp = document.getElementById('inp');
-  const text = inp.value.trim();
-  if (!text && !photoBase64) {
-    addMsg('Напиши вопрос или прикрепи фото! 📸', 'bot', false);
-    return;
-  }
-  if (!subject) { addMsg('Сначала выбери предмет вверху! 👆', 'bot', false); return; }
-
-  const imgB64 = photoBase64;
-  const imgM = photoMime;
-  const imgSrc = imgB64 ? `data:${imgM};base64,${imgB64}` : null;
-
-  inp.value = '';
-  inp.style.height = 'auto';
-
-  addMsg(text || '📸 Фото задачи', 'user', false, imgSrc);
-  removePhoto();
-  addXP(5, false);
-
-  await sendAIWithText(text, imgB64, imgM);
-}
-
-function onKey(e) {
-  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); }
-}
-function resize(el) {
-  el.style.height = 'auto';
-  el.style.height = Math.min(el.scrollHeight, 110) + 'px';
-}
-
-// ===== MICROPHONE =====
-function toggleMic() {
-  if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-    addMsg('Микрофон не поддерживается. Попробуй Chrome! 🌐', 'bot', false); return;
-  }
-  isListening ? stopMic() : startMic();
-}
-
-function startMic() {
-  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  recognition = new SR();
-  recognition.lang = subject === 'eng' ? 'en-US' : 'ru-RU';
-  recognition.continuous = false;
-  recognition.interimResults = false;
-  recognition.onstart = () => {
-    isListening = true;
-    const btn = document.getElementById('micBtn');
-    btn.classList.add('listening');
-    btn.textContent = '🔴';
-    document.getElementById('inp').placeholder = subject === 'eng' ? 'Говори по-английски... 🎤' : 'Говори... 🎤';
-  };
-  recognition.onresult = (e) => {
-    document.getElementById('inp').value = e.results[0][0].transcript;
-    stopMic();
-    setTimeout(() => send(), 300);
-  };
-  recognition.onerror = () => stopMic();
-  recognition.onend = () => stopMic();
-  recognition.start();
-}
-
-function stopMic() {
-  isListening = false;
-  if (recognition) { try { recognition.stop(); } catch(e){} }
-  const btn = document.getElementById('micBtn');
-  if (btn) { btn.classList.remove('listening'); btn.textContent = '🎤'; }
-  if (subject) document.getElementById('inp').placeholder = subject === 'eng' ? 'Напиши или скажи по-английски... 🎤' : 'Напиши вопрос или ответ...';
-}
 </script>
 </body>
 </html>
